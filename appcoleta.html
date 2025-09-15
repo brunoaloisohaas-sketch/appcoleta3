@@ -1,1524 +1,1383 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Fretes - LF Logística</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #3498db;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --success: #27ae60;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        
-        .header {
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-        
-        .logo-icon {
-            font-size: 28px;
-            margin-right: 10px;
-            color: var(--secondary);
-        }
-        
-        .logo-text {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-        
-        .content {
-            padding: 25px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-        
-        .search-container {
-            position: relative;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus, select:focus {
-            border-color: var(--accent);
-            outline: none;
-        }
-        
-        .suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-        }
-        
-        .suggestion-item {
-            padding: 12px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .suggestion-item:hover {
-            background: #f9f9f9;
-        }
-        
-        .client-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-        }
-        
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        .info-label {
-            font-weight: 600;
-            color: var(--dark);
-        }
-        
-        .calculations {
-            background: var(--light);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 25px;
-            display: none;
-        }
-        
-        .calculation-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px dashed #ddd;
-        }
-        
-        .calculation-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-            font-weight: bold;
-            font-size: 18px;
-            color: var(--primary);
-        }
-        
-        .btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.3s;
-            margin-top: 15px;
-        }
-        
-        .btn:hover {
-            background: #c0392b;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: var(--dark);
-            font-size: 14px;
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                border-radius: 10px;
-            }
-            
-            .content {
-                padding: 15px;
-            }
-            
-            input, select {
-                padding: 12px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LF Transportes — App de Coleta</title>
+  <meta name="theme-color" content="#ffa500" />
+  <style>
+    :root{
+      --lf-blue:#004c6d;
+      --lf-blue-2:#0a6a95;
+      --lf-orange:#ffa500;
+      --text:#1e293b;
+      --muted:#64748b;
+      --card:#ffffff;
+      --border:#e2e8f0;
+      --bg:#f8fafc;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .app-header{
+      background: linear-gradient(90deg, var(--lf-blue), var(--lf-blue-2));
+      color:#fff;
+      padding:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:sticky;
+      top:0;
+      z-index:10;
+      box-shadow:0 2px 10px rgba(0,0,0,.1);
+    }
+    .brand{display:flex;gap:10px;align-items:center;}
+    .logo{width:34px;height:34px;border-radius:8px;object-fit:cover;background:#fff;}
+    .app-header h1{font-size:18px;margin:0;}
+    .badge{
+      font-size:12px;
+      background:var(--lf-orange);
+      color:#111;
+      padding:6px 10px;
+      border-radius:999px;
+    }
+
+    .container{padding:16px;max-width:1200px;margin:0 auto;}
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding:16px;
+      border-radius:14px;
+      margin-bottom:16px;
+      box-shadow:0 6px 20px rgba(0,0,0,.06);
+      transition:transform .2s ease;
+    }
+    .card:hover{transform:translateY(-2px)}
+    .card-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .tab-btn{
+      padding:10px 14px;
+      border:none;
+      background:var(--lf-blue);
+      color:#fff;
+      border-radius:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+      transition:.25s;
+    }
+    .tab-btn:hover{filter:brightness(1.1)}
+    .tab-btn.active{background:var(--lf-orange);color:#111}
+
+    .grid{display:grid;gap:16px}
+    .grid-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .grid-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+    label{display:flex;flex-direction:column;gap:6px;font-weight:600;color:#0f172a}
+    input,select,textarea{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:14px;
+      outline: none;
+      transition:border-color .2s, box-shadow .2s;
+      background:#fff;
+    }
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--lf-blue);
+      box-shadow:0 0 0 3px rgba(0,76,109,.15);
+    }
+    textarea{resize:vertical}
+
+    button{
+      cursor:pointer;border:none;padding:10px 14px;border-radius:10px;
+      font-weight:700;transition:.2s;
+    }
+    .btn-primary{background:var(--lf-orange);color:#111}
+    .btn-primary:hover{filter:brightness(0.95)}
+    .btn-ghost{background:transparent;border:2px solid var(--lf-blue);color:var(--lf-blue)}
+    .btn-ghost:hover{background:var(--lf-blue);color:#fff}
+
+    .kpi .big{font-size:24px;font-weight:800;color:var(--lf-blue)}
+
+    .muted{color:var(--muted);font-size:12px}
+    .empty{
+      display:flex;align-items:center;justify-content:center;
+      border:2px dashed var(--border);border-radius:12px;padding:22px;color:var(--muted)
+    }
+    .eta-out{font-weight:700;margin-top:8px}
+
+    .list{display:grid;gap:8px}
+    .check-item{display:flex;gap:8px;align-items:center;font-weight:600;color:#0f172a}
+    .check-item input{width:auto}
+
+    @media (max-width: 768px){
+      .app-header h1{font-size:16px}
+      .tabs{flex-direction:column}
+      .tab-btn{width:100%;text-align:center}
+    }
+
+    #scanner-container {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    #scanner-container.active {
+      display: block;
+    }
+
+    #scanner-video {
+      display: block;
+      width: 100%;
+      max-height: 300px;
+      background: #000;
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .scanner-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      height: 200px;
+      border: 3px solid var(--lf-orange);
+      border-radius: 12px;
+      box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3);
+      animation: scanner-pulse 2s infinite;
+    }
+
+    @keyframes scanner-pulse {
+      0% { border-color: var(--lf-orange); }
+      50% { border-color: #ffcc66; }
+      100% { border-color: var(--lf-orange); }
+    }
+
+    .scanner-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .table-resumo {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    
+    .table-resumo th, .table-resumo td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .table-resumo th {
+      background-color: var(--lf-blue);
+      color: white;
+    }
+    
+    .table-resumo tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: var(--bg);
+    }
+
+    .login-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .login-logo .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--lf-blue);
+      font-weight: bold;
+      font-size: 24px;
+      margin: 0 auto 12px;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .user-type-selector {
+      display: flex;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .user-type-btn {
+      flex: 1;
+      padding: 12px;
+      background: var(--border);
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .user-type-btn.active {
+      background: var(--lf-blue);
+      color: white;
+    }
+
+    .admin-panel {
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      background-color: var(--lf-blue);
+      color: white;
+    }
+
+    .data-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-controls select, .filter-controls input {
+      min-width: 150px;
+    }
+    
+    .offline-badge {
+      background: #f44336;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+    
+    .online-badge {
+      background: #4caf50;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+
+    .nfe-info {
+      background-color: #f0f9ff;
+      border-left: 4px solid var(--lf-blue);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none;
+    }
+    
+    .nfe-info.visible {
+      display: block;
+    }
+    
+    .nfe-info p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    
+    .nfe-info .label {
+      font-weight: 600;
+      color: var(--lf-blue);
+    }
+  </style>
 </head>
 <body>
+  <!-- Tela de Login -->
+  <div id="loginScreen" class="login-container">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo">LF</div>
+        <h2>LF Transportes</h2>
+        <p class="muted">Faça login para continuar</p>
+        <div id="connectionStatus" class="offline-badge">Modo Offline</div>
+      </div>
+
+      <div class="user-type-selector">
+        <button type="button" class="user-type-btn active" data-user-type="driver">Motorista</button>
+        <button type="button" class="user-type-btn" data-user-type="admin">Administrador</button>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <label>
+          Usuário
+          <input type="text" id="loginUser" required placeholder="Digite seu usuário" />
+        </label>
+        
+        <label>
+          Senha
+          <input type="password" id="loginPassword" required placeholder="Digite sua senha" />
+        </label>
+        
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+
+      <p class="muted" style="text-align: center; margin-top: 16px;">
+        Dica: Use "motorista"/"motorista" ou "admin"/"admin" para teste
+      </p>
+    </div>
+  </div>
+
+  <!-- Aplicação -->
+  <div id="appContainer" style="display: none;">
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo" style="display:flex;align-items:center;justify-content:center;color:var(--lf-blue);font-weight:bold">LF</div>
+        <h1>LF Transportes • App de Coleta</h1>
+      </div>
+      <div class="row">
+        <span class="badge" id="userBadge">Motorista</span>
+        <span id="appConnectionStatus" class="offline-badge">Offline</span>
+        <button class="btn-ghost" onclick="logout()" style="color: white; border-color: white;">Sair</button>
+      </div>
+    </header>
+
     <div class="container">
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-truck-moving logo-icon"></i>
-                <div class="logo-text">LF LOGÍSTICA</div>
-            </div>
-            <h1>Calculadora de Fretes</h1>
-            <div class="subtitle">Cálculo rápido e preciso de valores de frete</div>
+      <!-- Navegação -->
+      <nav class="tabs" aria-label="Navegação de abas" id="mainTabs">
+        <button class="tab-btn active" data-tab="dash">Dashboard</button>
+        <button class="tab-btn" data-tab="check">Checklist</button>
+        <button class="tab-btn" data-tab="nf">Cadastrar NF</button>
+        <button class="tab-btn" data-tab="eta">ETA</button>
+        <button class="tab-btn" data-tab="sum">Resumo</button>
+        <button class="tab-btn" data-tab="admin" id="adminTab" style="display: none;">Admin</button>
+      </nav>
+
+      <!-- DASHBOARD -->
+      <section id="dash" class="tab card" style="display:block;">
+        <div class="card-title">
+          <h2>📊 Dashboard</h2>
+          <div class="row">
+            <label>De: <input type="date" id="filtroInicio" /></label>
+            <label>Até: <input type="date" id="filtroFim" /></label>
+            <button class="btn-primary" onclick="exportNFs()">Exportar CSV</button>
+          </div>
+        </div>
+        <div id="dashCards" class="grid grid-3"></div>
+      </section>
+
+      <!-- CHECKLIST -->
+      <section id="check" class="tab card" style="display:none;">
+        <h2>✅ Checklist</h2>
+        <div id="checklist" class="list">
+          <label class="check-item"><input type="checkbox" /> Pneus calibrados</label>
+          <label class="check-item"><input type="checkbox" /> Luzes funcionando</label>
+          <label class="check-item"><input type="checkbox" /> Lacres conferidos</label>
+          <label class="check-item"><input type="checkbox" /> Documentos em mãos</label>
+        </div>
+      </section>
+
+      <!-- CADASTRAR NF -->
+      <section id="nf" class="tab card" style="display:none;">
+        <h2>🧾 Cadastrar Nota Fiscal</h2>
+        
+        <!-- Scanner Section -->
+        <div class="row">
+          <button class="btn-primary" id="btScannerNF" style="display: flex; align-items: center; gap: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 7V5C4 4.44772 4.44772 4 5 4H7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 17V19C4 19.5523 4.44772 20 5 20H7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 17H22C22.5523 17 23 17.4477 23 18V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 7H22C22.5523 7 23 6.55228 23 6V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <rect x="1" y="1" width="22" height="22" rx="3" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 10H16V14H8V10Z" fill="currentColor"/>
+            </svg>
+            Escanear NF
+          </button>
         </div>
         
-        <div class="content">
-            <div class="form-group">
-                <label for="clientSearch">Cliente</label>
-                <div class="search-container">
-                    <input type="text" id="clientSearch" placeholder="Digite o nome do cliente...">
-                    <div class="suggestions" id="suggestions"></div>
-                </div>
-            </div>
-            
-            <div class="client-info" id="clientInfo">
-                <div class="info-row">
-                    <span class="info-label">CNPJ:</span>
-                    <span id="cnpjValue">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Percentual:</span>
-                    <span id="percentValue">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">ICMS:</span>
-                    <span id="icmsValue">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Frete Mínimo:</span>
-                    <span id="minFreteValue">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Observações:</span>
-                    <span id="obsValue">-</span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="productType">Tipo de Produto (se aplicável)</label>
-                <select id="productType">
-                    <option value="default">Padrão</option>
-                    <option value="moveis">Móveis</option>
-                    <option value="estofados">Estofados</option>
-                    <option value="decoracao">Decoração</option>
-                    <option value="contentores">Contentores</option>
-                    <option value="objetos">Objetos</option>
-                    <option value="cavaletti">Cavaletti</option>
-                    <option value="acessorios">Acessórios</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="valorNF">Valor da Nota Fiscal (R$)</label>
-                <input type="number" id="valorNF" placeholder="0,00" min="0" step="0.01">
-            </div>
-            
-            <button class="btn" id="calculateBtn">Calcular Frete</button>
-            
-            <div class="calculations" id="calculations">
-                <div class="calculation-row">
-                    <span>Percentual aplicado:</span>
-                    <span id="calcPercent">0%</span>
-                </div>
-                <div class="calculation-row">
-                    <span>Valor do frete:</span>
-                    <span id="calcFrete">R$ 0,00</span>
-                </div>
-                <div class="calculation-row">
-                    <span>Frete mínimo:</span>
-                    <span id="calcMinFrete">R$ 0,00</span>
-                </div>
-                <div class="calculation-row">
-                    <span>ICMS (7%):</span>
-                    <span id="calcICMS">R$ 0,00</span>
-                </div>
-                <div class="calculation-row">
-                    <span>Valor final:</span>
-                    <span id="calcFinal">R$ 0,00</span>
-                </div>
-            </div>
+        <div id="scanner-container">
+          <div class="scanner-overlay">
+            <div class="scanner-frame"></div>
+          </div>
+          <video id="scanner-video"></video>
+          <div class="scanner-controls">
+            <button class="btn-ghost" id="btStopScanner">Parar Scanner</button>
+          </div>
         </div>
+        
+        <!-- Informações da NF-e detectada -->
+        <div id="nfeInfo" class="nfe-info">
+          <p><span class="label">NF-e detectada:</span> <span id="nfeNumber"></span></p>
+          <p><span class="label">Chave de acesso:</span> <span id="nfeKey"></span></p>
+          <p><span class="label">Data de emissão:</span> <span id="nfeDate"></span></p>
+          <p><span class="label">CNPJ Emitente:</span> <span id="nfeCNPJ"></span></p>
+        </div>
+        
+        <div class="grid grid-2" style="margin-top:10px">
+          <div class="card">
+            <h3>Dados básicos</h3>
+            <label>Número NF <input id="nfNumero" /></label>
+            <label>Data/Hora coleta <input id="nfDataHora" type="datetime-local" /></label>
+            <label>Remetente <input id="nfRem" /></label>
+            <label>Destinatário <input id="nfDest" /></label>
+            <div class="grid grid-2">
+              <label>Volumes <input id="nfVolumes" type="number" min="0" /></label>
+              <label>Peso (kg) <input id="nfPeso" type="number" step="0.01" min="0" /></label>
+            </div>
+            <div class="grid grid-2">
+              <label>m³ <input id="nfM3" type="number" step="0.01" min="0" /></label>
+              <label>Rota
+                <select id="nfRota">
+                  <option>Fortaleza</option>
+                  <option>Belém</option>
+                  <option>Manaus</option>
+                  <option>Boa Vista</option>
+                  <option>Outra</option>
+                </select>
+              </label>
+            </div>
+            <label>Responsável <input id="nfResp" /></label>
+            <label>Observações <textarea id="nfObs" rows="3"></textarea></label>
+            <button class="btn-primary" id="btSalvarNF">Salvar NF</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ETA -->
+      <section id="eta" class="tab card" style="display:none;">
+        <h2>⏱️ ETA</h2>
+        <div class="grid grid-3 compact-grid">
+          <label>Partida <input id="etaPartida" type="datetime-local" /></label>
+          <label>Duração (min) <input id="etaMin" type="number" min="1" /></label>
+          <div class="row">
+            <button class="btn-primary" id="btCalcETA">Calcular</button>
+            <button class="btn-ghost" id="btSalvarETA">Salvar ETA</button>
+          </div>
+        </div>
+        <p id="etaOut" class="eta-out">—</p>
+      </section>
+
+      <!-- RESUMO -->
+      <section id="sum" class="tab card" style="display:none;">
+        <h2>🧾 Resumo</h2>
+        <div id="sumResumo"></div>
+      </section>
+
+      <!-- ADMIN PANEL -->
+      <section id="admin" class="tab card" style="display:none;">
+        <h2>👨‍💼 Painel Administrativo</h2>
+        
+        <div class="filter-controls">
+          <label>
+            Rota
+            <select id="adminFilterRota">
+              <option value="">Todas</option>
+              <option>Fortaleza</option>
+              <option>Belém</option>
+              <option>Manaus</option>
+              <option>Boa Vista</option>
+              <option>Outra</option>
+            </select>
+          </label>
+          
+          <label>
+            Data Início
+            <input type="date" id="adminFilterDataInicio" />
+          </label>
+          
+          <label>
+            Data Fim
+            <input type="date" id="adminFilterDataFim" />
+          </label>
+          
+          <button class="btn-primary" onclick="applyAdminFilters()">Aplicar Filtros</button>
+          <button class="btn-ghost" onclick="clearAdminFilters()">Limpar Filtros</button>
+          <button class="btn-primary" onclick="syncWithServer()" id="syncButton">Sincronizar com Servidor</button>
+        </div>
+        
+        <div class="admin-panel">
+          <h3>Relatório de NFs</h3>
+          <div id="adminReport"></div>
+        </div>
+      </section>
     </div>
-    
-    <div class="footer">
-        <p>LF Logística &copy; 2023 - Todos os direitos reservados</p>
-    </div>
+  </div>
 
-    <script>
-        // Base de dados completa de clientes
-        const clientes = [
-            { nome: "Mark Tripas", cnpj: "04.208.651/0001-22", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "Frete em 20%" },
-            { nome: "Helio Lucio Rabelo", cnpj: "17.618.724/0001-04", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "Frete em 20%" },
-            { nome: "Lara Embalagens", cnpj: "05.590.010/0001-48", percentual: 23, icms: "Não", freteMinimo: 0, observacao: "Frete em 23%" },
-            { nome: "Unitripas Condimentos e Tripas", cnpj: "07.973.018/0001-19", percentual: 21, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "Luciana Basque", cnpj: "07.651.638/0001-31", percentual: 21, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "Asmos Produtos Alimentícios", cnpj: "", percentual: 19, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "Laticínio Minas Gerais", cnpj: "", percentual: 22, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "Geneseas Aquacultura", cnpj: "", percentual: 24, icms: "Sim", freteMinimo: 0, observacao: "Aparecida do Taboado – MS" },
-            { 
-                nome: "DISTRIBUIDORA PINGUIM", 
-                cnpj: "13.547.501/0001-34", 
-                percentual: 24, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Contentores - 24% / Móveis - 17%",
-                variacoes: { contentores: 24, moveis: 17 }
-            },
-            { nome: "VINICOLA SÃO LUIS", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,40 AO KG + ICMS" },
-            { nome: "Forma Corporativo", cnpj: "", percentual: 19, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "TERRA BRASILIES", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
-            { 
-                nome: "TALYS COMERCIAL", 
-                cnpj: "", 
-                percentual: 13.5, 
-                icms: "Não", 
-                freteMinimo: 350, 
-                observacao: "Objetos decoração 13,5%, Móveis decoração 19,5%, Estofados 21,5%", 
-                variacoes: { objetos: 13.5, moveis: 19.5, estofados: 21.5 }
-            },
-            { nome: "ACASA COMERCIO", cnpj: "", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "AUCINO E PINHEIRO", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 340, observacao: "" },
-            { nome: "AVEL MOVEIS", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "para Fortaleza" },
-            { 
-                nome: "ANA NERY", 
-                cnpj: "06.421.259/0003-54", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 280, 
-                observacao: "MÓVEIS EM GERAL 16% FINAL, ESTOFADOS 20% FINAL, OBJETOS 9%",
-                variacoes: { moveis: 16, estofados: 20, objetos: 9 }
-            },
-            { nome: "JAB SIEBRA REPRESENTAÇOES", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "Fornecedor Espaço Casa e Jardim 16% Final" },
-            { nome: "FÁBRICA DE MOVEIS FLORENSE LTDA", cnpj: "89.962.294/0001-46", percentual: 8, icms: "Não", freteMinimo: 80, observacao: "" },
-            { nome: "VOLARE", cnpj: "16.633.145/0003-21", percentual: 8, icms: "Não", freteMinimo: 80, observacao: "" },
-            { 
-                nome: "ALTO PADRÃO/ SCA", 
-                cnpj: "", 
-                percentual: 10, 
-                icms: "Não", 
-                freteMinimo: 40, 
-                observacao: "Fortaleza - FOB: R$ 40,00 / CIF: R$ 240,00", 
-                variacoes: { fob: 10, cif: 10 }
-            },
-            { nome: "Cliente Venture Capital", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Part. da Fábrica SCA - Tomador: Kfa Projetos e Serviços" },
-            { nome: "A Renovar de São Luís", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "CITTA MOBILE SÃO LUIS", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "Organo Interiores LTDA", cnpj: "", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "Sem mínimo" },
-            { nome: "A & M MOVEIS PLANEJADOS LTDA", cnpj: "43.724.401/0001-05", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "Sem mínimo" },
-            { nome: "AMBIANCE COMERCIO DE MOVEIS PLANEJADOS", cnpj: "32.972.359/0001-17", percentual: 13, icms: "Sim", freteMinimo: 320, observacao: "TAXA CTE 15,00" },
-            { nome: "AGUIAR E LEVITA", cnpj: "", percentual: 12, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "J F DA SILVA", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "ARAMOVEIS INmaiTICA LTDA ME", cnpj: "03.131.885/0001-32", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "ARISTEU PIRES", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "CIF" },
-            { nome: "ATELIER HOME GARDEN", cnpj: "22.337.770/0001-67", percentual: 32, icms: "Não", freteMinimo: 0, observacao: "NÃO COBRAR FRETE MÍNIMO" },
-            { 
-                nome: "ARTMOVEIS COMERCIO DE MOVEIS LTDA", 
-                cnpj: "", 
-                percentual: 18, 
-                icms: "Não", 
-                freteMinimo: 320, 
-                observacao: "ESTOFADOS 18% / DECORAÇÃO 16%",
-                variacoes: { estofados: 18, decoracao: 16 }
-            },
-            { 
-                nome: "A R COMERCIO (BRETON) MANAUS", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 340, 
-                observacao: "Geral 16% / Objetos 12%",
-                variacoes: { default: 16, objetos: 12 }
-            },
-            { 
-                nome: "Hong Possas Moveis de Decoração Ltda.", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 360, 
-                observacao: "Geral 16% / Objetos 10%",
-                variacoes: { default: 16, objetos: 10 }
-            },
-            { nome: "LACASA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "ESCRITA MOVEIS", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "ALVES E GALGANI LTDA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "A C C FIGUEIREDO", cnpj: "", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "ALEXANDRE JEREISSATI", cnpj: "11.294.772/0001-08", percentual: 14, icms: "Não", freteMinimo: 320, observacao: "" },
-            { 
-                nome: "A C CUNHA", 
-                cnpj: "06.080.094/0001-32", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 350, 
-                observacao: "MOVEIS PLANEJADOS 16%, CAVALETTI 13%, DECORAÇÕES 16%, ESTOFADOS 18%, ACESSÓRIOS 10%",
-                variacoes: { moveis: 16, cavaletti: 13, decoracao: 16, estofados: 18, acessorios: 10 }
-            },
-            { nome: "A M N GOMIDE ME", cnpj: "11.801.548/0003-19", percentual: 13, icms: "Não", freteMinimo: 40, observacao: "CINEX/ANCESKI/UNICASA/FINOTOC - CAPITAL" },
-            { nome: "BANIWA / SCR COMERCIO DE MOVEIS", cnpj: "", percentual: 22, icms: "Sim", freteMinimo: 390, observacao: "" },
-            { nome: "BAZEI", cnpj: "", percentual: 0.38, icms: "Não", freteMinimo: 0, observacao: "Ad Valorem 0,38% + Taxas" },
-            { nome: "BITTENCOURT E DIAS LTDA ME", cnpj: "10.443.949/0001-10", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
-            { nome: "BONHO REPRESENTAÇÕES", cnpj: "26.253.593/0001-91", percentual: 12.5, icms: "Não", freteMinimo: 0, observacao: "Florense Manaus / Sem mínimo" },
-            { nome: "BONHO REPRESENTAÇÕES", cnpj: "26.253.593/0001-91", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "Cliente Francisco Charles" },
-            { nome: "BT MA COMERCIO E SERVICO LTDA", cnpj: "26.826.932/0001-81", percentual: 15, icms: "Não", freteMinimo: 320, observacao: "" },
-            { nome: "BC COMERCIO DE MOVEIS LTDA", cnpj: "29.346.796/0001-10", percentual: 17.5, icms: "Não", freteMinimo: 350, observacao: "TAXA CT-E: R$ 25,00" },
-            { nome: "BITAR MÓVEIS PLANEJADOS", cnpj: "02.214.821/0001-09", percentual: 10, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
-            { nome: "BENEDITA ALVES FERREIRA EIRELI ME", cnpj: "23.962.987/0001-20", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "CASAGRANDE", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "RMC", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "CICERA MARCIANA CRUZ S. COM.MÓVEIS", cnpj: "44352793000183", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Fortaleza" },
-            { 
-                nome: "CINEX", 
-                cnpj: "", 
-                percentual: 13, 
-                icms: "Não", 
-                freteMinimo: 390, 
-                observacao: "até Manaus / 15% até Boa Vista",
-                variacoes: { manaus: 13, boavista: 15 }
-            },
-            { nome: "CENTER MÓVEIS LTDA SÃO LUIS", cnpj: "26.723.257/0001-65", percentual: 18, icms: "Não", freteMinimo: 70, observacao: "TAXA CT-E: R$ 15,00" },
-            { nome: "CASA CHIQUE OUTLET", cnpj: "", percentual: 22, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
-            { nome: "CROCODILO BABY LTDA", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "CREATIVE DESIGN", cnpj: "03.471.254/0001-86", percentual: 14, icms: "Sim", freteMinimo: 0, observacao: "TAXA CT-E: 10,00" },
-            { nome: "CALLOU E BRAGA COMERCIO DE MOVEIS PLANEJADOS LTDA", cnpj: "26.905.856/0001-08", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "COMERCIAL ELETROMOVEIS", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 350, observacao: "Vários fornecedores" },
-            { 
-                nome: "CASA BONITA MAGAZINE LTDA", 
-                cnpj: "10.387.602/0007-92", 
-                percentual: 8, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "TAPETES E DECORAÇÃO",
-                variacoes: { decoracao: 8, moveis: 12, estofados: 15 }
-            },
-            { nome: "CHAPA NORTE COM.DE MOV.E ARQUITETURA LTDA", cnpj: "", percentual: 17.5, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "CLASSE MOVEIS", 
-                cnpj: "69.580.744/0001-29", 
-                percentual: 17.2, 
-                icms: "Não", 
-                freteMinimo: 240, 
-                observacao: "MÓVEIS E DECORAÇÃO 17.2%, ESTOFADOS 23.7%",
-                variacoes: { moveis: 17.2, decoracao: 17.2, estofados: 23.7 }
-            },
-            { nome: "CRIARE MANAUS / G DA S AMORIM", cnpj: "", percentual: 17.5, icms: "Sim", freteMinimo: 390, observacao: "+ Taxa 25,00+ ICMS" },
-            { nome: "C B DE SOUZA LTDA", cnpj: "49.437.665/0001-56", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "Columbia comercial", cnpj: "83674100000130", percentual: 16.5, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "DACOLONIA", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Manaus 16% / Boa Vista 18%",
-                variacoes: { manaus: 16, boavista: 18 }
-            },
-            { 
-                nome: "Dalla Costa /PRADEL /J L TORRES", 
-                cnpj: "", 
-                percentual: 18, 
-                icms: "Não", 
-                freteMinimo: 350, 
-                observacao: "CAPITAL 18% / INTERIOR 20%",
-                variacoes: { capital: 18, interior: 20 }
-            },
-            { nome: "D F N VERONEZE", cnpj: "", percentual: 14.5, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "DE CASA", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "DJE DALMOBILE SÃO LUIS", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 350, observacao: "" },
-            { nome: "D E C COMERCIO E REPRESENTACOES LTDA", cnpj: "01.622.589/0001-22", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "DPC COMERCIO VAREJISTA", 
-                cnpj: "", 
-                percentual: 22, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Fratini 22%, Gebwook 16%, Plaxmetal 16%, Cavaletti 14%",
-                variacoes: { fratini: 22, gebwook: 16, plaxmetal: 16, cavaletti: 14 }
-            },
-            { 
-                nome: "DESIGN COM DE MOVEIS LTDA", 
-                cnpj: "26049400000130", 
-                percentual: 14, 
-                icms: "Não", 
-                freteMinimo: 300, 
-                observacao: "MOVEIS FINAL - ORIGEM RS 14%, ESTOFADOS FINAL - ORIGEM RS 16%, MOVEIS FINAL - ORIGEM SC/PR/SP 16%, ESTOFADOS FINAL - ORIGEM SC/PR/SP 18%",
-                variacoes: { rs_moveis: 14, rs_estofados: 16, scprsp_moveis: 16, scprsp_estofados: 18 }
-            },
-            { nome: "EAGLE EMPREENDIMENTOS LTDA", cnpj: "42.592.289/0001-25", percentual: 16, icms: "Não", freteMinimo: 270, observacao: "R$ 320,00 + Icms (cubagem)" },
-            { nome: "RODRIGO DUARTE VARELA JUNIOR", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "CONSIDERAR 14%" },
-            { nome: "D e S LUCENA COMÉRCIO DE MÓVEIS E PLANEJADOS LTDA", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "DISTRIBUIDORA PINGUIM", 
-                cnpj: "", 
-                percentual: 17, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "MÓVEIS 17% / CAIXAS/CONTENTORES 24%",
-                variacoes: { moveis: 17, contentores: 24 }
-            },
-            { nome: "DE TONI", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "Ver tabela específica por região" },
-            { 
-                nome: "DESCONEXO/ VC LINS/ DNX", 
-                cnpj: "", 
-                percentual: 15, 
-                icms: "Não", 
-                freteMinimo: 320, 
-                observacao: "Fornecedores RS 15%, Fornecedores SP 12%, Demais fornecedores SC/PR 17%",
-                variacoes: { rs: 15, sp: 12, scpr: 17 }
-            },
-            { 
-                nome: "DINAMICA", 
-                cnpj: "", 
-                percentual: 10, 
-                icms: "Sim", 
-                freteMinimo: 340, 
-                observacao: "OBJETOS DE DECORAÇÃO 10%, MOVEIS DECORAÇÃO 18%, ESTOFADOS 20%",
-                variacoes: { objetos: 10, moveis: 18, estofados: 20 }
-            },
-            { nome: "DOMI INDUSTRIA DE MOVEIS E METAIS", cnpj: "32.301.406/0001-09", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "DULAR MOVEIS MA", 
-                cnpj: "", 
-                percentual: 20, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL E REGIÃO METROPOLITANA 20%, INTERIOR 23%",
-                variacoes: { capital: 20, interior: 23 }
-            },
-            { 
-                nome: "DULCE SILVEIRA", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "DECORAÇÃO 16%, ESTOFADOS 20%",
-                variacoes: { decoracao: 16, estofados: 20 }
-            },
-            { nome: "ELLEN VANESSA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "EDOVILHO/ PIVOTTO", cnpj: "", percentual: 7.5, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "EVIDENCIA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 100, observacao: "MÓVEIS – ESTOFADOS - DECORAÇÃO + TAXA CT-E: R$ 15,00" },
-            { nome: "EROMIDIO MARTINS DE OLIVEIRA", cnpj: "63329200000130", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "ERICK CAVALCANTE", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
-            { nome: "ESPACO COM DE MÓVEIS E DECORAÇÃO", cnpj: "06.287.879/0001-80", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "ESPACO COMERCIAL MA", cnpj: "12971000000130", percentual: 14.5, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "ESPAÇO DESIGN", cnpj: "05.753.036/0001-60", percentual: 16, icms: "Sim", freteMinimo: 240, observacao: "" },
-            { nome: "ESTOFADOS FRANK", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "verificar cubagem" },
-            { nome: "EDNILTON DINIZ FERREIRA", cnpj: "27.030.455/0001-06", percentual: 18, icms: "Sim", freteMinimo: 100, observacao: "TAXA DE CT-E: R$ 15,00" },
-            { 
-                nome: "Embale Embalagens de Plastico e Papel Ltda", 
-                cnpj: "02.195.311/0001-89", 
-                percentual: 10, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "G PANIZ, TEDESCO, SULPAC, PROGÁS/BRAESI, TOMAZI 10%, FORNO TEDESCO 14%, REFRIMATE/VENANCIO 16%, PISANI 17%",
-                variacoes: { gpaniz: 10, fornotedesco: 14, refrimate: 16, pisani: 17 }
-            },
-            { nome: "EMPORIO SS COM MOV E DECORAÇÕES LTDA", cnpj: "12.374.367/0002-35", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "ESPACO CONFORTO LTDA", cnpj: "16.562.359/0001-92", percentual: 15, icms: "Sim", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
-            { nome: "ETEVALDO DE DEUS", cnpj: "26.809.214/0001-05", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "EUROMANAUS", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "ENGEXATA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "EQUIPAR", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 350, observacao: "R$ 420 AO METRO CUBICO" },
-            { nome: "F A Z LIMA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "F.A DE ARUJO MÓVEIS", cnpj: "11.584.750/0002-55", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "F A DE ARAUJO NOLETO MÓVEIS" },
-            { nome: "FI MOVEIS", cnpj: "73.852.147/0001-83", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
-            { nome: "FRATINI", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "TABELA PASTA COMERCIAL" },
-            { 
-                nome: "FATIMA R.G. LIMA COM", 
-                cnpj: "01.378.094/0001-08", 
-                percentual: 18, 
-                icms: "Não", 
-                freteMinimo: 240, 
-                observacao: "Objetos de decoração/móveis em geral 18%, MOVEIS, CADEIRAS, APARADORES EM GERAL - REGIÃO SP 15%, TAPETES, LUSTRES, QUADROS, OBJ DECORAÇÃO - REGIÃO SP 9%",
-                variacoes: { default: 18, moveis_sp: 15, objetos_sp: 9 }
-            },
-            { nome: "FERREIRA E CASTRO", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 320, observacao: "" },
-            { nome: "F DOS S MONTEIRO NETO", cnpj: "29132708/0001-88", percentual: 16, icms: "Sim", freteMinimo: 240, observacao: "" },
-            { nome: "F E F COMERCIO DE MÓVEIS", cnpj: "11.791.139/0001-17", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "FF HOLANDA SOUTO ME", 
-                cnpj: "04.000.579/0001-43", 
-                percentual: 23, 
-                icms: "Não", 
-                freteMinimo: 120, 
-                observacao: "MOVEIS CARRARO 23%, MOVEL BENTO DITÁLIA DALLA COSTA 18%, DITÁLIA MOVEIS 20%",
-                variacoes: { carraro: 23, dalla_costa: 18, ditalia: 20 }
-            },
-            { nome: "F H LINHARES NETO", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 350, observacao: "" },
-            { nome: "FJG COMÉRCIO E SERVIÇOS", cnpj: "46453700000130", percentual: 18, icms: "Não", freteMinimo: 280, observacao: "" },
-            { 
-                nome: "FORJASUL", 
-                cnpj: "", 
-                percentual: 0, 
-                icms: "Não", 
-                freteMinimo: 75, 
-                observacao: "CAPITAL R$ 75,00 / INTERIOR R$ 90,00",
-                variacoes: { capital: 75, interior: 90 }
-            },
-            { 
-                nome: "FORMA ENGENHARIA COM E IND REPRESENTAÇÃO LTDA", 
-                cnpj: "23.518.798/0001-63", 
-                percentual: 13, 
-                icms: "Não", 
-                freteMinimo: 40, 
-                observacao: "PLANEJADOS (sca) - FOB R$ 40,00 / MOVEIS R$ 270,00",
-                variacoes: { planejados: 13, moveis: 0 }
-            },
-            { nome: "FORMA ENGENHARIA SP", cnpj: "", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "FORMA CORPORATIVO BELEM", 
-                cnpj: "", 
-                percentual: 19, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Gebb Work 19%, plaxmetal 19%",
-                variacoes: { gebbwork: 19, plaxmetal: 19 }
-            },
-            { nome: "F DOS SANTOS S NETO COMERCIO & SERVIÇOS", cnpj: "29.132.708/0001-88", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
-            { nome: "GG COMERCIO", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
-            { nome: "RV3 ENGENHARIA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "ESTOFADOS VERIFICAR" },
-            { nome: "GUERRA E GUERRA", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "GS3 Comercio de Moveis LTDA", cnpj: "", percentual: 9, icms: "Não", freteMinimo: 240, observacao: "" },
-            { nome: "GILMAR RODRIGUES DE MENDONÇA ARAUJO", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,40 ao kg+ ICMS" },
-            { nome: "GALVANOTEK FORTALEZA - CE", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "GENIALFLEX", 
-                cnpj: "", 
-                percentual: 18, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "CAPITAIS 18%, INTERIOR 20%",
-                variacoes: { capital: 18, interior: 20 }
-            },
-            { 
-                nome: "GIRAO MOVEIS/ E & E comercio/ E e E", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 320, 
-                observacao: "Móveis 16%, Estofados 18%",
-                variacoes: { moveis: 16, estofados: 18 }
-            },
-            { 
-                nome: "G M L COMERCIO E REPRESENTAÇÕES", 
-                cnpj: "", 
-                percentual: 35, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Pisani, RIZADINHA 35%, Arte Farma, Metalúrgica Venâncio 25%",
-                variacoes: { pisani: 35, artefarma: 25 }
-            },
-            { 
-                nome: "HEITOR MOVEIS", 
-                cnpj: "", 
-                percentual: 70, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "NF COM MARCACÕES 70%, SEM MARCAÇÕES NF CHEIA 18%",
-                variacoes: { marcacoes: 70, sem_marcacoes: 18 }
-            },
-            { nome: "HERCOSUL", cnpj: "03.252.545/0001-83", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,25/KG + ICMS" },
-            { nome: "HERCULANO TEIXEIRA VIEIRA ME", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "A HERCULANO HACK", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "Hasat Telecomunicações LTDA", cnpj: "32.193.900/0001-58", percentual: 16, icms: "Não", freteMinimo: 360, observacao: "" },
-            { nome: "J FABIANO ALVES JUNIOR EIRELI", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "J ODENCIO STAGE OFFICE", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "JAQUELINE ALVES MOREIRA MARTINS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 350, observacao: "" },
-            { 
-                nome: "MADESERRA MOVEIS E MADEIRAS LTDA", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 240, 
-                observacao: "Móveis em geral 16%, Estofados verificar(250,00 ao metro cubico)",
-                variacoes: { moveis: 16, estofados: 0 }
-            },
-            { nome: "IZABEL C C GUERRA", cnpj: "04.846.992/00001-23", percentual: 9.5, icms: "Não", freteMinimo: 0, observacao: "NÃO COBRAR FRETE MÍNIMO" },
-            { nome: "IJP COMÉRCIO DE MÓVEIS LTDA", cnpj: "45.311.237/0002-02", percentual: 16.5, icms: "Não", freteMinimo: 380, observacao: "" },
-            { nome: "IJP HOME COMERCIO", cnpj: "", percentual: 14.5, icms: "Sim", freteMinimo: 380, observacao: "" },
-            { nome: "IDELLI / FORTALEZA MOBILE", cnpj: "", percentual: 12, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "IRMÃOS OLIVEIRA COMERCIO DE MÓVEIS LTDA", 
-                cnpj: "10.908.615/0001-74", 
-                percentual: 17, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "MOVEIS K1/DITÁLIA/RODIAL/BARCELONA + PEDÁGIO 3.8% 17%, DALLA COSTA + PEDÁGIO 15%",
-                variacoes: { k1: 17, dalla_costa: 15 }
-            },
-            { nome: "IPE COMÉRCIO DE MÓVEIS E EQUIPAMENTOS", cnpj: "33817900000130", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "Quando for teresina Ipê - Não tem frete Mínimo" },
-            { nome: "ITALINEA MANAUS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 280, observacao: "" },
-            { 
-                nome: "MSUL MÓVEIS", 
-                cnpj: "", 
-                percentual: 18, 
-                icms: "Sim", 
-                freteMinimo: 320, 
-                observacao: "CAPITAL 18% R$ 320,00 / INTERIOR 18% R$ 360,00",
-                variacoes: { capital: 18, interior: 18 }
-            },
-            { nome: "Mobile Comercio de Moveis -AM", cnpj: "", percentual: 17.5, icms: "Sim", freteMinimo: 360, observacao: "" },
-            { 
-                nome: "JOSE ALVES NETO E CIA LTDA (FILIAL)", 
-                cnpj: "06.846.349/0006-30", 
-                percentual: 14, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Rivatti 14%, Demais 16%",
-                variacoes: { rivatti: 14, demais: 16 }
-            },
-            { nome: "JOSE DA COSTA VELOSO", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 350, observacao: "" },
-            { nome: "JRD BRANDÃO", cnpj: "23.511.454/0002-03", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
-            { nome: "JCL COMÉRCIO", cnpj: "17.213.256/0001-80", percentual: 18, icms: "Sim", freteMinimo: 390, observacao: "" },
-            { nome: "JLN MODULADOS", cnpj: "05.336.090/0001-00", percentual: 13, icms: "Não", freteMinimo: 390, observacao: "" },
-            { 
-                nome: "JCMR2 COMERCIO E REPRESENTACOES DE MOVEIS LTDA", 
-                cnpj: "", 
-                percentual: 15, 
-                icms: "Não", 
-                freteMinimo: 320, 
-                observacao: "MOVEIS PLANEJADOS 15%, CLIENTES FINAIS 16%",
-                variacoes: { planejados: 15, final: 16 }
-            },
-            { nome: "J A COMERCIO DE MOVEIS LTDA", cnpj: "03.048.265/0002-39", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "VERIFICAR SEMPRE SE É MEIA NOTA" },
-            { nome: "J E M COMERCIO DE MOVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "JANE MARY DE OLIVEIRA BARROS", cnpj: "", percentual: 13, icms: "Não", freteMinimo: 0, observacao: "SCA/SLIMSTONE/FINOTOC - VIA TERESINA FORMA ENGENHARIA" },
-            { nome: "JANE BONTEMPO", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "JG MOVEIS/ MOVENORTE/ BEIRA ALTA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "s/valor nota fiscal + ICMS" },
-            { nome: "FRANCO E AVELINO", cnpj: "26841200000130", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "FA MOVEIS PLANEJADOS", cnpj: "21.091.588/0001-02", percentual: 18.5, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
-            { 
-                nome: "FRANCISCO ANDRE MELO OLIVEIRA", 
-                cnpj: "", 
-                percentual: 10, 
-                icms: "Não", 
-                freteMinimo: 320, 
-                observacao: "AD VALOREM – 0,38%",
-                variacoes: { advalorem: 0.38 }
-            },
-            { nome: "HYGGE PROJETOS DE ENGENHARIA, CONSTRUCOES E CONSULTORIA – EI", cnpj: "", percentual: 20, icms: "Sim", freteMinimo: 390, observacao: "" },
-            { nome: "KADOSHhome", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "SARRECY COMERCIO VAREJISTA DE MÓVEIS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
-            { nome: "KLM", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 1320, observacao: "" },
-            { nome: "KOWORX", cnpj: "43.486.100/0001-82", percentual: 18, icms: "Sim", freteMinimo: 320, observacao: "FRANQUIA MY BOX SÃO LUIS" },
-            { 
-                nome: "LILIA COMERCIO E REPRES", 
-                cnpj: "06.841.837/0001-40", 
-                percentual: 15, 
-                icms: "Sim", 
-                freteMinimo: 350, 
-                observacao: "MÓVEIS E DECORAÇÕES ou R$ 360,00 ao M³ + ICMS, COLCHÕES E ESTOFADOS ou R$ 360,00 ao M³ + ICMS",
-                variacoes: { moveis: 15, estofados: 15 }
-            },
-            { nome: "LANA OSTERNO", cnpj: "11.896.125/0001-37", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "L E L MOVEIS PLANEJADO", cnpj: "26.135.197/0001-60", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "I EL INTERIORES", cnpj: "34.352.848/0001-00", percentual: 18, icms: "Não", freteMinimo: 300, observacao: "" },
-            { nome: "L E COMERCIAL DE MÓVEIS LTDA", cnpj: "36.324.024/0001-43", percentual: 10, icms: "Não", freteMinimo: 360, observacao: "" },
-            { nome: "L L MOVEIS LTDA", cnpj: "23.583.717/0001-09", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "L N L COMERCIAL", 
-                cnpj: "28.808.853/0001-73", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 360, 
-                observacao: "MOVEIS E DECORAÇÃO 16%, ESTOFADOS 19%",
-                variacoes: { moveis: 16, decoracao: 16, estofados: 19 }
-            },
-            { nome: "L e N Comercio de Moveis Ltda – Epp", cnpj: "20370400000130", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "L R NOGUEIRA AIRES", cnpj: "10.531.054/0001-37", percentual: 16, icms: "Não", freteMinimo: 360, observacao: "" },
-            { nome: "LS COMERCIO DE MOVEIS LTDA", cnpj: "03.293.013/0001-94", percentual: 14, icms: "Não", freteMinimo: 320, observacao: "FINAL" },
-            { nome: "LOURENA OLIVEIRA ARAUJO", cnpj: "21.399.504/0001-04", percentual: 13, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "LOUVRE MAGAZINE", cnpj: "10.854.623/0001-85", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "LOJAS PERIN", 
-                cnpj: "", 
-                percentual: 11, 
-                icms: "Sim", 
-                freteMinimo: 390, 
-                observacao: "Objetos de Decoração 11%, Móveis de Madeira 19%, Sofás e Estofados 28%",
-                variacoes: { objetos: 11, moveis: 19, estofados: 28 }
-            },
-            { nome: "ITALINEA", cnpj: "", percentual: 19, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "LADOSUL/ V SIRTOLI DECORACOES EPP", 
-                cnpj: "12.592.548/0001-57", 
-                percentual: 16, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "Objetos e Móveis de decoração s/NF + ICMS 16% ou R$ 300,00 ao m³ + ICMS, Estofados s/NF + ICMS 20% ou R$ 300,00 ao m³ + ICMS",
-                variacoes: { decoracao: 16, estofados: 20 }
-            },
-            { nome: "LUMINUM DECORELUX", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "CE-FORTALEZA" },
-            { 
-                nome: "MAISON COMÉRCIO DE MÓVEIS E DECORAÇÃO LTDA", 
-                cnpj: "", 
-                percentual: 18, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "MÓVEIS 18%, ESTOFADOS 20%",
-                variacoes: { moveis: 18, estofados: 20 }
-            },
-            { nome: "MANOEL JANDA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "M G F VIDAL JUAZEIRO DO NORTE", cnpj: "", percentual: 10, icms: "Não", freteMinimo: 0, observacao: "R$ 25,00 TAXA CT-E" },
-            { 
-                nome: "MÓVEIS HERVAL", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "LINHA MÓVEIS EM GERAL - CAPITAL 16%, INTERIOR 18%, LINHA MÓVEIS (ROUPEIROS) - CAPITAL 24%, INTERIOR 26%, LINHA ESTOFADOS - CAPITAL 22%, INTERIOR 25% + TAXA CT-E: R$ 25,00",
-                variacoes: { moveis_capital: 16, moveis_interior: 18, roupeiros_capital: 24, roupeiros_interior: 26, estofados_capital: 22, estofados_interior: 25 }
-            },
-            { nome: "MOVEIS BELINI", cnpj: "", percentual: 25, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "MESA E ARTE", cnpj: "", percentual: 17, icms: "Não", freteMinimo: 350, observacao: "" },
-            { nome: "MICRODADOS CAXIAS MA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "HARMONY EMPREENDIMENTOS IMOBILIARIOS LTDA", cnpj: "02.497.060/0001-97", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
-            { 
-                nome: "ADEMIR MULLER/ COMPARSI/ VALDIR RODRIGUES", 
-                cnpj: "", 
-                percentual: 22, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL - nota com risco assinada 50% 22%, INTERIOR - nota com risco assinada 50% 24%",
-                variacoes: { capital: 22, interior: 24 }
-            },
-            { nome: "NOVA ALIANÇA", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,90 AO KG + ICMS" },
-            { nome: "M G DE SOUZA E PASSOS FERREIRA LTDA", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 340, observacao: "" },
-            { nome: "MAGAZINE FORTALEZA", cnpj: "60975000000120", percentual: 17, icms: "Não", freteMinimo: 320, observacao: "" },
-            { 
-                nome: "MADERO OU SIERRA", 
-                cnpj: "", 
-                percentual: 12, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Mercadoria devolução Fortaleza X Gramado 12%, Mercadorias Sierra x Madero= Gramado x Fortaleza 18%, Mercadorias Sierra e Madeiro Clientes Finais 12%",
-                variacoes: { devolucao: 12, sierra_madero: 18, clientes_finais: 12 }
-            },
-            { nome: "MAVILAR MOVEIS", cnpj: "34.023.199/0001-95", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "Francisco André Melo", cnpj: "", percentual: 11.5, icms: "Sim", freteMinimo: 0, observacao: "MF comercio" },
-            { nome: "M S COMERCIO DE MOVEIS LTDA ME", cnpj: "09.328.859/0001-07", percentual: 15, icms: "Sim", freteMinimo: 0, observacao: "+ TAXA 15,00 - NÃO TEM FRETE MINÍMO" },
-            { nome: "M M COMERCIO E PLANEJADOS", cnpj: "28.431.699/0001-63", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "+ TAXA 15,00 - NÃO TEM FRETE MINÍMO" },
-            { nome: "M S MOVEIS E ELETRO – CE Juazeiro", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "M M MARCENARIA MODERNA", cnpj: "", percentual: 20, icms: "Não", freteMinimo: 360, observacao: "" },
-            { 
-                nome: "POLITORNO", 
-                cnpj: "", 
-                percentual: 20, 
-                icms: "Sim", 
-                freteMinimo: 430, 
-                observacao: "Manaus 20% R$ 430,00, Boa Vista 22% R$ 490,00, Capital 18% R$ 350,00, Interior I 20% R$ 390,00, Interior II 22% R$ 450,00",
-                variacoes: { manaus: 20, boavista: 22, capital: 18, interior_i: 20, interior_ii: 22 }
-            },
-            { nome: "MASSOTI FORTALEZA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "M. DA CRUZ G. DE A. BARBOSA", 
-                cnpj: "04.468.160/0001-10", 
-                percentual: 10, 
-                icms: "Não", 
-                freteMinimo: 240, 
-                observacao: "Objetos decoração 10%, Móveis decoração 15%, Estofados 17%",
-                variacoes: { objetos: 10, moveis: 15, estofados: 17 }
-            },
-            { 
-                nome: "M G SILVA MONTEIRO E CIA LTDA EPP/ Todeschini Manaus", 
-                cnpj: "87.547.170/0001-79", 
-                percentual: 13, 
-                icms: "Não", 
-                freteMinimo: 280, 
-                observacao: "SOBRE OS PRODUTOS + TAXA CT-E: 15,00 + ICMS",
-                variacoes: { default: 13 }
-            },
-            { nome: "MG SILVA MONTEIRO", cnpj: "07.234.176/00001-57", percentual: 18, icms: "Não", freteMinimo: 350, observacao: "SOBRE OS PRODUTOS" },
-            { nome: "MAGAZINE LILIANE", cnpj: "11.590.296/0045-85", percentual: 13, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "MAGAZINE DOS MÓVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "MIL COMERCIO", cnpj: "08.352.947/0001-73", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "MODULONORTE COMERCIO", cnpj: "90.441.460/0001-48", percentual: 15, icms: "Não", freteMinimo: 280, observacao: "NEW" },
-            { nome: "MODULARTE", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "NEW" },
-            { nome: "MADURO EPIC MOVEIS", cnpj: "29.708.319/0002-39", percentual: 17, icms: "Não", freteMinimo: 380, observacao: "SOBRE PRODUTOS" },
-            { nome: "MARKO COM. E SERV. LTDA/ LINDE COMERCIO", cnpj: "12.173.530/0002-00", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "Não cobrar frete mínimo" },
-            { 
-                nome: "METALURGICA BOEIRA", 
-                cnpj: "", 
-                percentual: 14, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL 14%, INTERIOR 16% + TAXA CT-E: R$ 10,00 + PEDÁGIO: 3,8%",
-                variacoes: { capital: 14, interior: 16 }
-            },
-            { nome: "METALURGICA CRIPPA", cnpj: "", percentual: 0.38, icms: "Não", freteMinimo: 0, observacao: "Ad Valorem 0,38% + Taxa CTe R$25,00= /0,93" },
-            { nome: "PAULO TOBA COMERCIO DE MOVEIS EIRELI", cnpj: "17.303.084/0001-35", percentual: 16, icms: "Sim", freteMinimo: 240, observacao: "" },
-            { nome: "Modulados Inteligente Comercio", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "MARELLI CIF", 
-                cnpj: "", 
-                percentual: 12, 
-                icms: "Sim", 
-                freteMinimo: 240, 
-                observacao: "CAPITAL 12% R$ 240,00, INTERIOR 14% R$ 280,00",
-                variacoes: { capital: 12, interior: 14 }
-            },
-            { nome: "MARELLI PERNAMBUCO/ SOFT MOVEIS", cnpj: "", percentual: 12, icms: "Não", freteMinimo: 180, observacao: "" },
-            { 
-                nome: "MAIA E SILVA PLANEJADOS ME- PRIME PLANEJADOS", 
-                cnpj: "18.730.464/0001-19", 
-                percentual: 14, 
-                icms: "Não", 
-                freteMinimo: 240, 
-                observacao: "HR LAMINADOS, BOA VISTA, GRUPO K1 + TAXA CT-E: R$ 15,00",
-                variacoes: { default: 14 }
-            },
-            { 
-                nome: "MARELLI TERESINA E SÃO LUIS(FOB)", 
-                cnpj: "", 
-                percentual: 12, 
-                icms: "Não", 
-                freteMinimo: 270, 
-                observacao: "Capital (São Jose do Ribamar considerar capital) 12% R$ 270,00, Interior 14.5% R$ 320,00",
-                variacoes: { capital: 12, interior: 14.5 }
-            },
-            { nome: "MARINHO COLCHÕES", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
-            { nome: "MEL PLANEJADOS COMERCIO", cnpj: "35454200000130", percentual: 12, icms: "Sim", freteMinimo: 150, observacao: "" },
-            { 
-                nome: "MS ALBUQUERQUE", 
-                cnpj: "", 
-                percentual: 13, 
-                icms: "Sim", 
-                freteMinimo: 70, 
-                observacao: "ARTESANO 13%, GREBEL / RGB 14%, CONFORFLEX 18%, DAF / BARTELLI 14%, REALITA / MATREZAN 16.5% + TAXA CT-E: R$ 10,00",
-                variacoes: { artesano: 13, grebel: 14, conforflex: 18, daf: 14, realita: 16.5 }
-            },
-            { nome: "MS ELETRO – ITALINEA LIMOEIRO DO NORTE", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 180, observacao: "" },
-            { 
-                nome: "MARQUES E ROCHA", 
-                cnpj: "", 
-                percentual: 13, 
-                icms: "Sim", 
-                freteMinimo: 100, 
-                observacao: "CAPITAL 13% R$ 100,00, INTERIOR 15% R$ 120,00",
-                variacoes: { capital: 13, interior: 15 }
-            },
-            { nome: "MOVERO MOVEIS R.P ROCHA", cnpj: "54.760.547/0001-14", percentual: 18, icms: "Não", freteMinimo: 360, observacao: "" },
-            { nome: "N C G de Andrade/ NA CASA BOUTIQUE", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "NORTE MOVEIS COMERCIO E SERVICOS", cnpj: "09.539.544/0001-09", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "NEW MOVEIS", 
-                cnpj: "46475800000130", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Moveis de decoração 16%, Estofados 19%",
-                variacoes: { moveis: 16, estofados: 19 }
-            },
-            { nome: "COLUMBIA COMERCIAL", cnpj: "", percentual: 16.5, icms: "Não", freteMinimo: 350, observacao: "fabricas GEBB WORK E PLAXMETAL" },
-            { nome: "NORMA L O LIMA GELOPAR - PE", cnpj: "", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "PRO SAUDE", cnpj: "", percentual: 15.4, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
-            { nome: "UTILITTA COMÉRCIO", cnpj: "19036600000130", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
-            { nome: "NEW LAV", cnpj: "30534100000120", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "OMP", 
-                cnpj: "05.075.877/0001-65", 
-                percentual: 11, 
-                icms: "Não", 
-                freteMinimo: 120, 
-                observacao: "TERESINA-PI + 3% (VILAR) 11%, PE – CABOTAGEM CAP. 346 M³ R$ 120,00, PE – INT. 399 M³ R$ 150,00, AM – CABOTAGEM 399 M³ R$ 150,00, CE – CABOTAGEM CAP. 346 M³ R$ 120,00, CE – INT. 339 M³ R$ 150,00, MA – RODOVIÁRIO CAP. 325 M³ R$ 120,00, MA – INT. 399 M³ R$ 120,00, MA – INT II. 441 M³ R$ 150,00, PI – RODOVIÁRIO CAP. 325 M³ R$ 120,00, PI – INT. 399 M³ R$ 150,00, PI – INT II. 441 M³ R$ 180,00, AD VALORE 0.36% + FOB: ICMS",
-                variacoes: { teresina: 11 }
-            },
-            { nome: "OITOMOVEIS", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 280, observacao: "" },
-            { nome: "ORNATTO", cnpj: "33.262.310/0001-33", percentual: 20, icms: "Sim", freteMinimo: 240, observacao: "HR LAMINADOS" },
-            { nome: "POLO DO ELETRO COMERCIAL DE MÓVEIS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "MÓVIES E DECORAÇÕES EM GERAL" },
-            { 
-                nome: "ANTONIO MARCOS CORRE", 
-                cnpj: "", 
-                percentual: 14, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "DECORAÇÃO 14%, ESTOFADOS 16%, ESTOFADOS – SC – PR 18%, DECORAÇÃO – SC - PR 16%",
-                variacoes: { decoracao: 14, estofados: 16, scpr_estofados: 18, scpr_decoracao: 16 }
-            },
-            { nome: "PROJETARE MOVEIS E ACESS LTDA", cnpj: "119766890000100", percentual: 16, icms: "Não", freteMinimo: 350, observacao: "" },
-            { nome: "PAFAM", cnpj: "22.939.159/0001-09", percentual: 12.5, icms: "Não", freteMinimo: 240, observacao: "" },
-            { 
-                nome: "PAULO FREIRE MOVEIS AMB LTDA", 
-                cnpj: "15.399.197/0001-50", 
-                percentual: 17, 
-                icms: "Não", 
-                freteMinimo: 350, 
-                observacao: "ORIGEM: RS - DECORAÇÃO 17%, ORIGEM: RS - ESTOFADOS 21.5%, ORIGEM: SC - DECORAÇÃO 14%, ORIGEM: SC - ESTOFADOS 20%",
-                variacoes: { rs_decoracao: 17, rs_estofados: 21.5, sc_decoracao: 14, sc_estofados: 20 }
-            },
-            { 
-                nome: "P G BRANDÃO COM DE MOVEIS E DEC", 
-                cnpj: "", 
-                percentual: 15, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "RODOVIÁRIO 15%, MARÍTIMO 13.5%, FRETE FOB: ICMS, TAXA DE CT-E: R$ 10,00",
-                variacoes: { rodoviario: 15, maritimo: 13.5 }
-            },
-            { nome: "PAULO H DE L REIS", cnpj: "32.397.826/0001-22", percentual: 13, icms: "Não", freteMinimo: 180, observacao: "INOVE OFFICE" },
-            { nome: "PROJETO INTERIORES LTDA", cnpj: "13.044.265/0001-33", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "PIRATINI", 
-                cnpj: "", 
-                percentual: 20, 
-                icms: "Sim", 
-                freteMinimo: 180, 
-                observacao: "Capital 20% R$ 180,00, Interior 23% R$ 220,00",
-                variacoes: { capital: 20, interior: 23 }
-            },
-            { nome: "PRISCILLA M SALIM", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "Final" },
-            { nome: "ARAUJO POUCHAIN (MAREL SLZ)", cnpj: "25.535.572/0001-04", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "" },
-            { 
-                nome: "PSD LOPES ME", 
-                cnpj: "", 
-                percentual: 17, 
-                icms: "Sim", 
-                freteMinimo: 70, 
-                observacao: "MOVEIS E DECORAÇÕES 17%, ESTOFADOS 20%, ACESSÓRIOS 10% + TAXA CT-E: R$ 10,00",
-                variacoes: { moveis: 17, estofados: 20, acessorios: 10 }
-            },
-            { 
-                nome: "PERFILYNE INDUSTRIA E COM DE PERFIS PLÁSTICOS LTDA", 
-                cnpj: "02.180.351/0001-57", 
-                percentual: 19, 
-                icms: "Não", 
-                freteMinimo: 80, 
-                observacao: "CAPITAL 19%, INTERIOR 21% + PEDÁGIO: 3,8%",
-                variacoes: { capital: 19, interior: 21 }
-            },
-            { nome: "PETRUS DA SILVA CARDOSO", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 70, observacao: "" },
-            { 
-                nome: "PROVENCI DESIGN", 
-                cnpj: "", 
-                percentual: 19, 
-                icms: "Sim", 
-                freteMinimo: 70, 
-                observacao: "CAPITAL 19% + TAXA CT-E: R$ 10,00 + ICMS, INTERIOR 22% + TAXA CT-E: R$ 10,00 + ICMS",
-                variacoes: { capital: 19, interior: 22 }
-            },
-            { 
-                nome: "PERCASA", 
-                cnpj: "", 
-                percentual: 17, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL 17%, INTERIOR 18% + TAXA CT-E: R$ 10,00",
-                variacoes: { capital: 17, interior: 18 }
-            },
-            { nome: "P DA S CARDOSO", cnpj: "10.988.332/0001-62", percentual: 20, icms: "Sim", freteMinimo: 380, observacao: "" },
-            { nome: "PASSOS COZINHAS E DECORAÇões", cnpj: "12.454.450/0001-33", percentual: 9, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "PROGRAMA COMÉRCIO E SERVIÇOS LTDA", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Sim", 
-                freteMinimo: 70, 
-                observacao: "ARTESANO/ARVI/M D MOBILE/MOVEIS THONART/BEL DESINGN/MOVEIS FERRUS/MOVEIS KAPPESBERG",
-                variacoes: { default: 16 }
-            },
-            { 
-                nome: "PVX Comercio de Moveis Ltda", 
-                cnpj: "57.407.052/0001-02", 
-                percentual: 17, 
-                icms: "Não", 
-                freteMinimo: 420, 
-                observacao: "Moveis em Geral, Objetos de decoração, Estofados 17%, Logistica 3.5%",
-                variacoes: { moveis: 17, logistica: 3.5 }
-            },
-            { 
-                nome: "PROGRAMA OFFICE/ P e G comercio de moveis", 
-                cnpj: "", 
-                percentual: 14, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL - AVANTTI, ARTESANO, CAVALETTI, GEBWORK 14%, INTERIOR - AVANTTI, ARTESANO, CAVALETTI, GEBWORK 18%",
-                variacoes: { capital: 14, interior: 18 }
-            },
-            { nome: "QUALITÁ MOVEIS DECORATIVOS", cnpj: "", percentual: 60, icms: "Não", freteMinimo: 0, observacao: "V1 TOTAL DA NF / POR 60%" },
-            { nome: "ROSANE MENEZES DA FONSECA", cnpj: "70.308.358/0001-61", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "RENNA" },
-            { nome: "RAIMUNDO MILTON CAROLINO", cnpj: "06.965.560/0001-67", percentual: 15.5, icms: "Não", freteMinimo: 0, observacao: "MOVEIS CAPITAL E INTERIOR 15.5%, TELASUL 12%" },
-            { nome: "REALIZARTE COMÉRCIO DE MÓVEIS PLANEJADOS", cnpj: "", percentual: 11, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "REQUINTE MOVEIS", cnpj: "14.537.353/0002-10", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "PARNAIBA - Sem minino" },
-            { nome: "REQUINTE MOVEIS", cnpj: "14.537.353/0001-30", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "URUCUI - Sem minino" },
-            { nome: "RECICLE EXPRESS IND E COM LTDA", cnpj: "07.969.885/0001-80", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "RB IND E COM DE MOVEIS LTDA", 
-                cnpj: "11.750.243/0001-63", 
-                percentual: 17, 
-                icms: "Não", 
-                freteMinimo: 120, 
-                observacao: "MOVEIS DIVERSOS 17%, COLCHÃO 27%, ESTOFADOS 23%",
-                variacoes: { moveis: 17, colchao: 27, estofados: 23 }
-            },
-            { nome: "R. B. Teixeira Oliveira - Me", cnpj: "27.218.737/0001-31", percentual: 16.5, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "RENNA ALUMINIO E COMPONENTES/RIVATTI", cnpj: "03.961.151/0001-02", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "Área de trabalho" },
-            { 
-                nome: "REPRESENTANTE RIVATTI THULHYO SÃO LUIS – MA", 
-                cnpj: "", 
-                percentual: 15, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "CAP 15%, INT 17% + ICMS + TAXA CT-E R$ 25,00",
-                variacoes: { capital: 15, interior: 17 }
-            },
-            { 
-                nome: "REF REPRESENTAÇÕES", 
-                cnpj: "10598800000120", 
-                percentual: 11, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL - FLORENSE SÃO LUIS 11%, INTERIOR - FLORENSE SÃO LUIS 14%",
-                variacoes: { capital: 11, interior: 14 }
-            },
-            { nome: "R N MARTINS COMÉRCIO", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 280, observacao: "" },
-            { nome: "RODRIGO ELETRO - M. D. Lopes de Moura", cnpj: "20.884.084/0001-80", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "MÓVEIS RODIAL", cnpj: "91.062.497/0001-28", percentual: 26, icms: "Sim", freteMinimo: 0, observacao: "Boa Vista - Verificar cubagem" },
-            { 
-                nome: "NEPOMUCENO", 
-                cnpj: "50231100000130", 
-                percentual: 10, 
-                icms: "Não", 
-                freteMinimo: 320, 
-                observacao: "OBJETOS 10%, MOVEIS 15%",
-                variacoes: { objetos: 10, moveis: 15 }
-            },
-            { nome: "SÃO FRANCISCO COMERCIO TERESINA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "final" },
-            { nome: "S S DE CASTRO", cnpj: "", percentual: 10, icms: "Sim", freteMinimo: 180, observacao: "" },
-            { nome: "R2 SMG EMPREENDIMENTOS E EVENTOS LTDA", cnpj: "46097500000130", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "400 ao m³ + ICMS" },
-            { 
-                nome: "A.I.T Esquadrias", 
-                cnpj: "", 
-                percentual: 14.5, 
-                icms: "Não", 
-                freteMinimo: 240, 
-                observacao: "TERESINA 14.5% R$ 240,00, SÃO LUIS 14.5% R$ 240,00, IMPERATRIZ 16% R$ 280,00",
-                variacoes: { teresina: 14.5, sao_luis: 14.5, imperatriz: 16 }
-            },
-            { 
-                nome: "C P DE OLIVEIRA ESQUADRIAS", 
-                cnpj: "", 
-                percentual: 19, 
-                icms: "Não", 
-                freteMinimo: 360, 
-                observacao: "Com vidros - BALSAS E IMPERATRIZ 19%, Sem vidros - BALSAS E IMPERATRIZ 16%",
-                variacoes: { com_vidros: 19, sem_vidros: 16 }
-            },
-            { 
-                nome: "RESFRIAR CLIMATIZADORES", 
-                cnpj: "", 
-                percentual: 12, 
-                icms: "Não", 
-                freteMinimo: 100, 
-                observacao: "CAPITAL 12%, INTERIOR 14%, MANAUS 16% + TAXA CT-E: R$ 15,00 + PEDÁGIO: 3,8% + ICMS",
-                variacoes: { capital: 12, interior: 14, manaus: 16 }
-            },
-            { nome: "S.M.V. LIMA", cnpj: "92.979.459/0001-05", percentual: 20, icms: "Sim", freteMinimo: 0, observacao: "MANAUS FOB" },
-            { nome: "SGRY BELEM RESTAURANTES LDTA", cnpj: "44.254.425/0001-00", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "STAR MOBILE", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "Capital 16%, Interior I 18%, Interior II 20%, Região Manaus 18%, Região Boa Vista 20%",
-                variacoes: { capital: 16, interior_i: 18, interior_ii: 20, manaus: 18, boavista: 20 }
-            },
-            { nome: "SÃO FRANCISCO COMERCIO TERESINA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "final" },
-            { 
-                nome: "SIMONE HADDAD", 
-                cnpj: "", 
-                percentual: 9, 
-                icms: "Sim", 
-                freteMinimo: 200, 
-                observacao: "TAPETES E DECORAÇÃO 9%, MOVEIS E DECORAÇÃO 17%, ESTOFADOS E SOFAS 19.5%",
-                variacoes: { tapetes: 9, moveis: 17, estofados: 19.5 }
-            },
-            { 
-                nome: "SONHO BIANCO/ISMY", 
-                cnpj: "", 
-                percentual: 24, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "Demais fornecedores final 24%, Fornecedor PILATI 20%, camas motorizadas (FORNECEDOR PILATI) 12%, box e bicamas (FORNECEDOR PILATI) 20%",
-                variacoes: { default: 24, pilati: 20, camas_motorizadas: 12, box_bicamas: 20 }
-            },
-            { nome: "STANKI IND DE PLASTICOS", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "R$ 35,00 a unidade" },
-            { nome: "S e S Ananindeua- PA", cnpj: "34.970.451/0002-54", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "LACASAMUL" },
-            { nome: "SPAZIO COMERCIO DE MOVEIS LTDA", cnpj: "01.067.443/0001-62", percentual: 17, icms: "Não", freteMinimo: 240, observacao: "" },
-            { nome: "TODESCHINI RECIFE (VALINO)", cnpj: "", percentual: 13.5, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00 *BOLETO MÁXIMO DE R$ 3.00,00" },
-            { 
-                nome: "TELASUL", 
-                cnpj: "", 
-                percentual: 20, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "LINHA TELASUL 20%, LINHA THELA 15%",
-                variacoes: { telasul: 20, thela: 15 }
-            },
-            { nome: "TAP MOVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 240, observacao: "" },
-            { nome: "TAU COMERCIO DE MÓVEIS", cnpj: "", percentual: 10, icms: "Sim", freteMinimo: 180, observacao: "+TAXA CT-E: 15,00 + ICMS" },
-            { 
-                nome: "TASSEI COMÉRCIO DE MOVEIS E SERVICOS LTDA", 
-                cnpj: "", 
-                percentual: 15, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "RODOVIÁRIO 15%, MARÍTIMO 13%",
-                variacoes: { rodoviario: 15, maritimo: 13 }
-            },
-            { nome: "TRENDD COM DE MÓVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 100, observacao: "" },
-            { 
-                nome: "TISSOT", 
-                cnpj: "06.954.361/0001-53", 
-                percentual: 16, 
-                icms: "Sim", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL CE 16%, INTERIOR CE 18%",
-                variacoes: { capital: 16, interior: 18 }
-            },
-            { nome: "THE COM. DE MÓVEIS LTDA", cnpj: "19.645.957/0001-13", percentual: 11.5, icms: "Não", freteMinimo: 240, observacao: "BRS/CINEX/ALUMISTAR/TODESCHINI/UNICASA - CAPITAL" },
-            { nome: "E E E DIOGO E & E DIOGO", cnpj: "54.265.299/0001-35", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
-            { 
-                nome: "TOK GLASS", 
-                cnpj: "", 
-                percentual: 18, 
-                icms: "Não", 
-                freteMinimo: 180, 
-                observacao: "CAPITAL 18%, INTERIOR 21%",
-                variacoes: { capital: 18, interior: 21 }
-            },
-            { nome: "THL COMERCIO E SERVICOS LTDA", cnpj: "10.932.737/0001-04", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
-            { 
-                nome: "TOTUS DESIGN", 
-                cnpj: "", 
-                percentual: 12, 
-                icms: "Sim", 
-                freteMinimo: 350, 
-                observacao: "OBJETOS DECORAÇÃO 12%, MOVEIS DECORAÇÃO 16%, ESTOFADOS 20%",
-                variacoes: { objetos: 12, moveis: 16, estofados: 20 }
-            },
-            { nome: "GRUPO MANIX", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "R$360,00 AO M³ + ICMS" },
-            { 
-                nome: "UNIVERSUM", 
-                cnpj: "", 
-                percentual: 13, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "PI/TERESINA (FOB USAR FORMA ENGENHARIA) 13%, PI/TERESINA (CIF) 16%",
-                variacoes: { fob: 13, cif: 16 }
-            },
-            { nome: "MOBILI COMERCIO DE MOVEIS LTDA", cnpj: "36.648.572/0001-29", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "JHONY APARECIDO SOARES DE SOUZA", cnpj: "35.562.056/0001-14", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "UNITRIPAS", cnpj: "", percentual: 21, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "VENTURA REPRE. E SERVIÇOS LTDA", cnpj: "003.864.520/0001-30", percentual: 8, icms: "Não", freteMinimo: 0, observacao: "FLORENSE/ DEMAIS MARCAS - CAPITAL" },
-            { nome: "VALCAD COMÉRCIO E SERVIÇOS DE MOVEIS LTDA – EPP", cnpj: "20.504.758/0001-74", percentual: 16, icms: "Não", freteMinimo: 180, observacao: "TAXA CT-E: R$ 15,00" },
-            { 
-                nome: "VA COMERCIO VAREJISTA DE MOVEIS LTDA", 
-                cnpj: "06.922.141/0001-48", 
-                percentual: 22, 
-                icms: "Sim", 
-                freteMinimo: 150, 
-                observacao: "ESTOFADOS 22%, DECORAÇÃO/MÓVEIS 18% + TAXA CT-E: R$ 15,00",
-                variacoes: { estofados: 22, decoracao: 18 }
-            },
-            { nome: "VILAG MATERIAIS E SERVIÇOS DE CONSTRUÇÃO LTDA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
-            { 
-                nome: "VQ COM. E SER. – DALMÓBILE CE", 
-                cnpj: "", 
-                percentual: 10, 
-                icms: "Não", 
-                freteMinimo: 180, 
-                observacao: "quando não fechar 10toneladas 10%, quando fechar 10toneladas 8%",
-                variacoes: { normal: 10, fechado: 8 }
-            },
-            { nome: "W V B LEITE FORTES ALIMENTAÇÃO", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 180, observacao: "" },
-            { nome: "VINÍCOLA SÃO LUIZ", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "São Luís - 1,10kg + ICMS" },
-            { nome: "Ipê Indústria de Móveis", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "GOB MOVEIS", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "M C COELHO COMÉRCIO", cnpj: "32.712.305/0001-12", percentual: 18, icms: "Não", freteMinimo: 350, observacao: "Final" },
-            { nome: "J. MARCON", cnpj: "89.686.422/0001-76", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Frete CIF – Verificar cubagem" },
-            { nome: "MAGAZINE LILIANI AS", cnpj: "11.590.296/0002-45", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "MINUZIE MOVEIS PLANEJADOS LTDA", cnpj: "39.385.804/0001-91", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "M C INTERIORES LTDA", cnpj: "47.717.999/0001-58", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "NÃO POSSUI FRETE MÍNIMO" },
-            { 
-                nome: "APEN – V W V IND DE MOVEIS E ESQUADRIAS LTDA", 
-                cnpj: "02.841.350/0001-06", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "IMPERATRIZ 16%, TEREZINA 14.5%",
-                variacoes: { imperatriz: 16, terezina: 14.5 }
-            },
-            { nome: "MJG FERREIRA M J G", cnpj: "17.060.345/0001-33", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "SÃO LUIS" },
-            { nome: "N C G DE ANDRADE ME", cnpj: "41.217.017/0001-82", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "BUENO DIAS", cnpj: "", percentual: 17.2, icms: "Não", freteMinimo: 0, observacao: "Dos Fornecedores MARANELLO ou PISANI" },
-            { nome: "JUCELINO DE SOUZA BATISTa EIRELI", cnpj: "05.930.501/0001-90", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "ADAGIO HOME LTDA", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "WOOD DECOR", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "CASA BONITA – FORTALEZA", cnpj: "10.387.602/0006-01", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "Não cobrar frete mínimo, somente o percentual" },
-            { nome: "EROMIDIO MARTINS DE OLIVEIRA - TERESINA", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "MADESERRA MOVEIS E MADEIRAS LTDA", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Não", 
-                freteMinimo: 240, 
-                observacao: "FRETE 16%, RIVATTI 15%",
-                variacoes: { default: 16, rivatti: 15 }
-            },
-            { nome: "LEAL E PARACAT LTDA", cnpj: "47.164.931/0001-99", percentual: 18, icms: "Não", freteMinimo: 380, observacao: "BOA VISTA" },
-            { nome: "FABRICA TOKGLASS / TG INDUSTRIA", cnpj: "19.551.279/0001-20", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "Final" },
-            { nome: "ITALO LUA SOUZA", cnpj: "29.880.066/0001-03", percentual: 18, icms: "Não", freteMinimo: 280, observacao: "Final" },
-            { nome: "H G MOVEIS PLANEJADOS E MODULADOS – DELLANNO MANAUS", cnpj: "45.452.460/0001-99", percentual: 16.5, icms: "Não", freteMinimo: 280, observacao: "" },
-            { nome: "FORMATO ARTIGOS DE ESCRITORIO LTDA", cnpj: "11.365.507/0001-65", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "D A RODRIGUES EPP", cnpj: "30.020.425/0001-23", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "CARVALHO E PINTO", 
-                cnpj: "", 
-                percentual: 16, 
-                icms: "Sim", 
-                freteMinimo: 240, 
-                observacao: "MOVEIS EM GERAL 16%, OBJETOS DE DECORAÇÃO 10%",
-                variacoes: { moveis: 16, objetos: 10 }
-            },
-            { 
-                nome: "PILATI - CE", 
-                cnpj: "", 
-                percentual: 12, 
-                icms: "Sim", 
-                freteMinimo: 270, 
-                observacao: "Linha Motorizada + ICMS final 12%, Linha cama e colchões + ICMS final 18%",
-                variacoes: { motorizada: 12, cama_colchoes: 18 }
-            },
-            { nome: "R C F DE", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "VERIFICAR CUBAGEM" },
-            { nome: "K V S", cnpj: "20.386.674/0001-83", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "Final" },
-            { nome: "A RONALDO DE SOUSA & CIA LTDA", cnpj: "27.253.176/0001-01", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "WCENE", 
-                cnpj: "", 
-                percentual: 18, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "QUANDO COLETAR NA CAVALETTI SOBRE A NOTA DE FABRICA 18%, SE ENTREGAREM NA MATRIZ 16%",
-                variacoes: { cavaletti: 18, matriz: 16 }
-            },
-            { nome: "FRANGOIANO ALIMENTOS", cnpj: "00.109.066/0001-14", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
-            { nome: "FHIAMA FONSECA FERREIRA", cnpj: "19.835.748/0001-32", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "IDRI BOA VISTA", cnpj: "", percentual: 20, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "America Moveis e Eletro Ltda – Epp", cnpj: "10.175.675/0001-25", percentual: 25, icms: "Sim", freteMinimo: 490, observacao: "BOA VISTA" },
-            { 
-                nome: "FORMA ENGENHARIA COM E IND REPRESENTAÇÃO LTDA", 
-                cnpj: "23.518.798/0001-03", 
-                percentual: 13, 
-                icms: "Não", 
-                freteMinimo: 40, 
-                observacao: "PLANEJADOS (sca) R$ 40,00, MOVEIS R$ 270,00",
-                variacoes: { planejados: 13, moveis: 0 }
-            },
-            { nome: "Andrade Industria de Moveis", cnpj: "11.333.538/0001-34", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
-            { nome: "D S Marcenaria Moderna", cnpj: "46.711.848/0001-20", percentual: 19.5, icms: "Sim", freteMinimo: 390, observacao: "" },
-            { nome: "M D VAZ COMERCIO", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
-            { 
-                nome: "LOCALIZA RENT A CAR S/A", 
-                cnpj: "", 
-                percentual: 12, 
-                icms: "Não", 
-                freteMinimo: 0, 
-                observacao: "CAPITAL - DIVERSAS CIDADES 12%, INTERIOR - DIVERSAS CIDADES 14%",
-                variacoes: { capital: 12, interior: 14 }
-            },
-            { nome: "FRANCISCO EDUARDO VIEIRA LIMA", cnpj: "12.056.282/0001-28", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Não cobrar frete minino" }
-        ];
+  <script>
+    // ===== CONFIGURAÇÕES E VARIÁVEIS GLOBAIS =====
+    const SUPABASE_URL = "https://vqefwcpbzuhcfkrzaxic.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6InZxZWZ3Y3BienVoY2ZrcnpheGljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5NDY5MjAsImV4cCI6MjA3MjUyMjkyMH0.wbnbfxZuR7bRahQfBpsDDErk8vAiWQOortnzNmyR8prU";
 
-        // Elementos DOM
-        const clientSearch = document.getElementById('clientSearch');
-        const suggestions = document.getElementById('suggestions');
-        const clientInfo = document.getElementById('clientInfo');
-        const productType = document.getElementById('productType');
-        const valorNF = document.getElementById('valorNF');
-        const calculateBtn = document.getElementById('calculateBtn');
-        const calculations = document.getElementById('calculations');
+    // Chaves para localStorage
+    const LS = { 
+      nfs: 'lf_nfs', 
+      admin: 'lf_admin',
+      user: 'lf_user',
+      userType: 'lf_user_type',
+      pendingSync: 'lf_pending_sync'
+    };
 
-        // Elementos para exibir informações do cliente
-        const cnpjValue = document.getElementById('cnpjValue');
-        const percentValue = document.getElementById('percentValue');
-        const icmsValue = document.getElementById('icmsValue');
-        const minFreteValue = document.getElementById('minFreteValue');
-        const obsValue = document.getElementById('obsValue');
+    // Variáveis globais
+    let nfs = [];
+    let scannerActive = false;
+    let videoStream = null;
+    let scanningInterval = null;
+    let currentUserType = 'driver';
+    let currentUser = '';
+    let isOnline = false;
+    let supabase = null;
 
-        // Elementos para exibir cálculos
-        const calcPercent = document.getElementById('calcPercent');
-        const calcFrete = document.getElementById('calcFrete');
-        const calcMinFrete = document.getElementById('calcMinFrete');
-        const calcICMS = document.getElementById('calcICMS');
-        const calcFinal = document.getElementById('calcFinal');
+    // Funções utilitárias
+    function loadLS(key, fallback) { 
+      try { 
+        return JSON.parse(localStorage.getItem(key)) ?? fallback; 
+      } catch(e) { 
+        return fallback; 
+      } 
+    }
 
-        // Cliente atualmente selecionado
-        let selectedClient = null;
+    function saveLS(key, val) { 
+      localStorage.setItem(key, JSON.stringify(val)); 
+    }
 
-        // Função para filtrar sugestões
-        function filterSuggestions(query) {
-            return clientes.filter(cliente => 
-                cliente.nome.toLowerCase().includes(query.toLowerCase())
-            );
+    function isMobile() {
+      return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    function isAdmin() {
+      return currentUserType === 'admin';
+    }
+
+    function checkOnlineStatus() {
+      isOnline = navigator.onLine;
+      const statusElement = document.getElementById('connectionStatus');
+      const appStatusElement = document.getElementById('appConnectionStatus');
+      
+      if (statusElement) {
+        statusElement.textContent = isOnline ? 'Online' : 'Offline';
+        statusElement.className = isOnline ? 'online-badge' : 'offline-badge';
+      }
+      
+      if (appStatusElement) {
+        appStatusElement.textContent = isOnline ? 'Online' : 'Offline';
+        appStatusElement.className = isOnline ? 'online-badge' : 'offline-badge';
+      }
+      
+      return isOnline;
+    }
+
+    // ===== PROCESSADOR DE CHAVE DE ACESSO NF-e =====
+    function processarChaveNFE(chave) {
+      // Verificar se é uma chave de acesso válida (44 dígitos)
+      if (!chave || chave.length !== 44 || !/^\d+$/.test(chave)) {
+        return null;
+      }
+      
+      try {
+        // Extrair informações da chave de acesso (formato padrão NF-e)
+        const uf = chave.substring(0, 2);
+        const anoMes = chave.substring(2, 6);
+        const cnpj = chave.substring(6, 20);
+        const modelo = chave.substring(20, 22);
+        const serie = chave.substring(22, 25);
+        const numeroNF = chave.substring(25, 34);
+        const codigoNumerico = chave.substring(34, 43);
+        const digitoVerificador = chave.substring(43, 44);
+        
+        // Mapeamento de UF (códigos IBGE)
+        const ufMap = {
+          '12': 'AC', '27': 'AL', '16': 'AP', '13': 'AM', '29': 'BA',
+          '23': 'CE', '53': 'DF', '32': 'ES', '52': 'GO', '21': 'MA',
+          '51': 'MT', '50': 'MS', '31': 'MG', '15': 'PA', '25': 'PB',
+          '41': 'PR', '26': 'PE', '22': 'PI', '24': 'RN', '43': 'RS',
+          '33': 'RJ', '11': 'RO', '14': 'RR', '42': 'SC', '35': 'SP',
+          '28': 'SE', '17': 'TO'
+        };
+        
+        return {
+          chave: chave,
+          uf: ufMap[uf] || uf,
+          ano: '20' + anoMes.substring(0, 2),
+          mes: anoMes.substring(2, 4),
+          cnpj: cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5'),
+          modelo: modelo,
+          serie: serie,
+          numero: numeroNF.replace(/^0+/, ''), // Remove zeros à esquerda
+          codigoNumerico: codigoNumerico,
+          digitoVerificador: digitoVerificador
+        };
+      } catch (error) {
+        console.error('Erro ao processar chave de acesso:', error);
+        return null;
+      }
+    }
+
+    // ===== EXIBIR INFORMAÇÕES DA NF-e =====
+    function exibirInfoNFE(dadosNFE) {
+      const nfeInfo = document.getElementById('nfeInfo');
+      document.getElementById('nfeNumber').textContent = dadosNFE.numero;
+      document.getElementById('nfeKey').textContent = dadosNFE.chave;
+      document.getElementById('nfeDate').textContent = `${dadosNFE.mes}/${dadosNFE.ano}`;
+      document.getElementById('nfeCNPJ').textContent = dadosNFE.cnpj;
+      nfeInfo.classList.add('visible');
+      
+      // Preencher automaticamente o campo de número da NF
+      document.getElementById('nfNumero').value = dadosNFE.numero;
+      
+      // Se a UF for conhecida, tentar preencher a rota automaticamente
+      if (dadosNFE.uf === 'AM') {
+        document.getElementById('nfRota').value = 'Manaus';
+      } else if (dadosNFE.uf === 'PA') {
+        document.getElementById('nfRota').value = 'Belém';
+      } else if (dadosNFE.uf === 'RR') {
+        document.getElementById('nfRota').value = 'Boa Vista';
+      } else if (dadosNFE.uf === 'CE') {
+        document.getElementById('nfRota').value = 'Fortaleza';
+      }
+    }
+
+    // ===== SISTEMA DE LOGIN =====
+    async function setupLogin() {
+      // Verificar status de conexão
+      checkOnlineStatus();
+      window.addEventListener('online', checkOnlineStatus);
+      window.addEventListener('offline', checkOnlineStatus);
+      
+      // Tentar inicializar Supabase apenas se estivermos online
+      if (isOnline) {
+        try {
+          console.log("Tentando conectar com Supabase...");
+          const supabaseModule = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+          supabase = supabaseModule.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          console.log("Supabase inicializado com sucesso");
+  
+          // Teste a conexão (corrigido)
+          const { count, error } = await supabase
+            .from('usuarios')
+            .select('*', { count: 'exact', head: true });
+            
+          if (error) {
+            console.error("Erro ao testar conexão:", error);
+            isOnline = false;
+          } else {
+            console.log("Conexão testada com sucesso. Total de usuários:", count);
+          }
+        } catch (error) {
+          console.error("Erro ao carregar Supabase:", error);
+          isOnline = false;
+          checkOnlineStatus();
         }
+      }
+      
+      // Verificar se já está logado
+      const savedUser = localStorage.getItem(LS.user);
+      const savedUserType = localStorage.getItem(LS.userType);
+      
+      if (savedUser && savedUserType) {
+        currentUser = savedUser;
+        currentUserType = savedUserType;
+        showApp();
+        return;
+      }
+      
+      // Configurar seletor de tipo de usuário
+      document.querySelectorAll('.user-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.user-type-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+      
+      // Configurar formulário de login
+      document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const usuario = document.getElementById('loginUser').value.trim();
+        const senha = document.getElementById('loginPassword').value.trim();
+        const userType = document.querySelector('.user-type-btn.active').dataset.userType;
+        
+        console.log("Tentando login com:", { usuario, senha, userType });
 
-        // Função para exibir sugestões
-        function showSuggestions(suggestionsList) {
-            suggestions.innerHTML = '';
-            
-            if (suggestionsList.length === 0) {
-                suggestions.style.display = 'none';
-                return;
+        // Se estivermos online, tentar autenticar com Supabase
+        if (isOnline && supabase) {
+          try {
+            // CONSULTA CORRIGIDA - use 'usuario' em vez de 'e-mail'
+            const { data, error } = await supabase
+              .from('usuarios')
+              .select('*')
+              .eq('usuario', usuario) // ou 'email' dependendo da sua tabela
+              .eq('senha', senha)
+              .eq('tipo', userType)
+              .eq('ativo', true)
+              .maybeSingle();
+
+            console.log("Resultado Supabase:", { data, error });
+
+            if (error) {
+              console.error('Erro do Supabase:', error);
+              // Fallback para login local em caso de erro
+              useLocalLogin(usuario, senha, userType);
+              return;
             }
-            
-            suggestionsList.forEach(cliente => {
-                const div = document.createElement('div');
-                div.className = 'suggestion-item';
-                div.textContent = cliente.nome;
-                div.addEventListener('click', () => {
-                    selectClient(cliente);
-                });
-                suggestions.appendChild(div);
-            });
-            
-            suggestions.style.display = 'block';
+
+            if (!data) {
+              alert('Usuário, senha ou tipo incorretos, ou usuário inativo.');
+              return;
+            }
+
+            // Login bem-sucedido
+            currentUser = data.usuario;
+            currentUserType = data.tipo;
+
+            localStorage.setItem(LS.user, currentUser);
+            localStorage.setItem(LS.userType, currentUserType);
+
+            showApp();
+            return;
+          } catch (error) {
+            console.error('Erro na autenticação:', error);
+            // Fallback para login local em caso de erro
+            useLocalLogin(usuario, senha, userType);
+            return;
+          }
         }
+        
+        // Se offline ou Supabase não disponível, usar login local
+        useLocalLogin(usuario, senha, userType);
+      });
+    }
 
-        // Função para selecionar um cliente
-        function selectClient(cliente) {
-            selectedClient = cliente;
-            clientSearch.value = cliente.nome;
-            suggestions.style.display = 'none';
-            
-            // Exibir informações do cliente
-            cnpjValue.textContent = cliente.cnpj || '-';
-            percentValue.textContent = cliente.percentual ? `${cliente.percentual}%` : 'Variável';
-            icmsValue.textContent = cliente.icms;
-            minFreteValue.textContent = cliente.freteMinimo ? `R$ ${cliente.freteMinimo.toFixed(2)}` : '-';
-            obsValue.textContent = cliente.observacao || '-';
-            
-            clientInfo.style.display = 'block';
+    // Login local (fallback)
+    function useLocalLogin(usuario, senha, userType) {
+      if ((usuario === 'motorista' && senha === 'motorista' && userType === 'driver') || 
+          (usuario === 'admin' && senha === 'admin' && userType === 'admin')) {
+        currentUser = usuario;
+        currentUserType = userType;
+        
+        localStorage.setItem(LS.user, currentUser);
+        localStorage.setItem(LS.userType, currentUserType);
+        
+        showApp();
+      } else {
+        alert('Credenciais inválidas. Use "motorista"/"motorista" para motorista ou "admin"/"admin" para administrador.');
+      }
+    }
+
+    // ===== MOSTRAR APP =====
+    function showApp() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'block';
+      
+      // Atualizar interface baseada no tipo de usuário
+      document.getElementById('userBadge').textContent = isAdmin() ? 'Administrador' : 'Motorista';
+      
+      // Controle de abas por tipo de usuário
+      const adminTab = document.getElementById('adminTab');
+      const dashTab = document.querySelector('.tab-btn[data-tab="dash"]');
+      
+      if (isAdmin()) {
+        adminTab.style.display = 'block';
+        dashTab.style.display = 'block';
+        renderAdminPanel();
+      } else {
+        // Para motoristas, esconder dashboard e admin
+        adminTab.style.display = 'none';
+        dashTab.style.display = 'none';
+        
+        // Se a aba ativa for dashboard, mudar para cadastro de NF
+        if (document.querySelector('.tab-btn.active').dataset.tab === 'dash') {
+          document.querySelector('.tab-btn[data-tab="nf"]').click();
         }
+      }
+      
+      // Inicializar a aplicação
+      initApp();
+    }
 
-        // Event listeners
-        clientSearch.addEventListener('input', () => {
-            const query = clientSearch.value;
-            if (query.length > 1) {
-                const filtered = filterSuggestions(query);
-                showSuggestions(filtered);
-            } else {
-                suggestions.style.display = 'none';
-            }
-        });
+    // ===== LOGOUT =====
+    function logout() {
+      localStorage.removeItem(LS.user);
+      localStorage.removeItem(LS.userType);
+      
+      document.getElementById('appContainer').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+      
+      // Limpar formulário de login
+      document.getElementById('loginForm').reset();
+    }
 
-        calculateBtn.addEventListener('click', () => {
-            if (!selectedClient) {
-                alert('Por favor, selecione um cliente primeiro.');
-                return;
-            }
-            
-            const valor = parseFloat(valorNF.value);
-            if (isNaN(valor) || valor <= 0) {
-                alert('Por favor, insira um valor válido para a Nota Fiscal.');
-                return;
-            }
-            
-            // Calcular percentual baseado no tipo de produto selecionado
-            let percentual = selectedClient.percentual;
-            
-            // Verificar se há variações baseadas no tipo de produto
-            if (selectedClient.variacoes) {
-                const tipo = productType.value;
-                if (tipo !== 'default' && selectedClient.variacoes[tipo] !== undefined) {
-                    percentual = selectedClient.variacoes[tipo];
-                }
-            }
-            
-            // Cálculos
-            const valorFrete = valor * (percentual / 100);
-            const freteMinimo = selectedClient.freteMinimo || 0;
-            const valorComMinimo = Math.max(valorFrete, freteMinimo);
-            const icms = selectedClient.icms === 'Sim' ? valorComMinimo * 0.07 : 0;
-            const valorFinal = valorComMinimo + icms;
-            
-            // Exibir cálculos
-            calcPercent.textContent = `${percentual}%`;
-            calcFrete.textContent = `R$ ${valorFrete.toFixed(2)}`;
-            calcMinFrete.textContent = `R$ ${freteMinimo.toFixed(2)}`;
-            calcICMS.textContent = `R$ ${icms.toFixed(2)}`;
-            calcFinal.textContent = `R$ ${valorFinal.toFixed(2)}`;
-            
-            calculations.style.display = 'block';
+    // ===== NAVEGAÇÃO =====
+    function setupNavigation() {
+      // Abas
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.tab;
+          
+          // Esconder todas as abas
+          document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
+          
+          // Mostrar a aba selecionada
+          document.getElementById(tab).style.display = 'block';
+          
+          // Atualizar botões ativos
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Atualizar conteúdo específico da aba
+          if (tab === 'dash') renderDashboardCards();
+          if (tab === 'sum') atualizarResumo();
+          if (tab === 'admin') renderAdminPanel();
         });
+      });
+    }
 
-        // Fechar sugestões ao clicar fora
-        document.addEventListener('click', (e) => {
-            if (!clientSearch.contains(e.target) && !suggestions.contains(e.target)) {
-                suggestions.style.display = 'none';
-            }
+    // ===== DASHBOARD =====
+    function renderDashboardCards() {
+      const container = document.getElementById("dashCards");
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      // Modo simplificado no celular para motoristas
+      if (isMobile() && !isAdmin()) {
+        container.innerHTML = "<p class='muted'>📱 Use a aba <b>Cadastrar NF</b> para adicionar novas notas fiscais.</p>";
+        return;
+      }
+
+      if (!nfs || !nfs.length) {
+        container.innerHTML = "<div class='empty'>Nenhuma NF cadastrada ainda. Vá em <b>Cadastrar NF</b> para adicionar.</div>";
+        return;
+      }
+
+      // Agrupar por rota
+      const agrupado = {};
+      nfs.forEach(nf => {
+        const rota = nf.rota || 'Outra';
+        if (!agrupado[rota]) {
+          agrupado[rota] = {
+            qtd: 0,
+            volumes: 0,
+            peso: 0,
+            m3: 0,
+            nfs: []
+          };
+        }
+        
+        agrupado[rota].qtd += 1;
+        agrupado[rota].volumes += Number(nf.volumes || 0);
+        agrupado[rota].peso += Number(nf.peso || 0);
+        agrupado[rota].m3 += Number(nf.m3 || 0);
+        agrupado[rota].nfs.push(nf);
+      });
+
+      // Criar cards
+      for (const rota in agrupado) {
+        const dados = agrupado[rota];
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${rota}</h3>
+          <div class="kpi"><span class="big">${dados.qtd}</span> NFs</div>
+          <div class="kpi"><span class="big">${dados.volumes}</span> Volumes</div>
+          <div class="kpi"><span class="big">${dados.peso.toFixed(2)}</span> kg</div>
+          <div class="kpi"><span class="big">${dados.m3.toFixed(2)}</span> m³</div>
+        `;
+        container.appendChild(card);
+      }
+    }
+
+    // ===== CADASTRO DE NF =====
+    function salvarNF() {
+      const nf = {
+        numero: document.getElementById("nfNumero").value.trim(),
+        datahora: document.getElementById("nfDataHora").value,
+        rem: document.getElementById("nfRem").value.trim(),
+        dest: document.getElementById("nfDest").value.trim(),
+        volumes: Number(document.getElementById("nfVolumes").value||0),
+        peso: Number(document.getElementById("nfPeso").value||0),
+        m3: Number(document.getElementById("nfM3").value||0),
+        rota: document.getElementById("nfRota").value,
+        resp: document.getElementById("nfResp").value.trim(),
+        obs: document.getElementById("nfObs").value.trim(),
+        usuario: currentUser,
+        dataRegistro: new Date().toISOString()
+      };
+      
+      if(!nf.numero){ 
+        alert("Informe número da NF"); 
+        return; 
+      }
+      
+      nfs.unshift(nf);
+      saveLS(LS.nfs, nfs);
+      
+      // Se estiver online, tentar sincronizar com o servidor
+      if (isOnline && supabase) {
+        syncNFWithServer(nf);
+      } else {
+        // Se offline, armazenar para sincronização posterior
+        const pendingSync = loadLS(LS.pendingSync, []);
+        pendingSync.push(nf);
+        saveLS(LS.pendingSync, pendingSync);
+      }
+      
+      renderDashboardCards();
+      atualizarResumo();
+      
+      if (isAdmin()) {
+        renderAdminPanel();
+      }
+      
+      alert("NF salva!");
+      
+      // Limpar campos
+      ["nfNumero","nfDataHora","nfRem","nfDest","nfVolumes","nfPeso","nfM3","nfResp","nfObs"].forEach(id=>{
+        const el = document.getElementById(id); 
+        if (el) el.value = "";
+      });
+      
+      // Esconder informações da NF-e
+      document.getElementById('nfeInfo').classList.remove('visible');
+    }
+
+    // Sincronizar NF com servidor
+    async function syncNFWithServer(nf) {
+      if (!supabase) return false;
+      
+      try {
+        const { data, error } = await supabase
+          .from('notas_fiscais')
+          .insert([nf]);
+          
+        if (error) {
+          console.error('Erro ao sincronizar NF:', error);
+          // Salvar para tentar novamente depois
+          const pendingSync = loadLS(LS.pendingSync, []);
+          pendingSync.push(nf);
+          saveLS(LS.pendingSync, pendingSync);
+          return false;
+        }
+        
+        console.log('NF sincronizada com sucesso:', data);
+        return true;
+      } catch (error) {
+        console.error('Erro ao sincronizar NF:', error);
+        // Salvar para tentar novamente depois
+        const pendingSync = loadLS(LS.pendingSync, []);
+        pendingSync.push(nf);
+        saveLS(LS.pendingSync, pendingSync);
+        return false;
+      }
+    }
+
+    // ===== ETA =====
+    function calcularETA() {
+      const partida = new Date(document.getElementById("etaPartida").value);
+      const minutos = Number(document.getElementById("etaMin").value);
+      
+      if(!partida.getTime() || !minutos){ 
+        alert("Preencha partida e duração"); 
+        return; 
+      }
+      
+      const chegada = new Date(partida.getTime() + minutos * 60000);
+      const chegadaStr = chegada.toLocaleString("pt-BR");
+      
+      document.getElementById("etaOut").textContent = chegadaStr;
+    }
+
+    function salvarETA() {
+      const partida = document.getElementById("etaPartida").value;
+      const minutos = document.getElementById("etaMin").value;
+      const chegada = document.getElementById("etaOut").textContent;
+      
+      if(chegada === "—"){ 
+        alert("Calcule o ETA primeiro"); 
+        return; 
+      }
+      
+      const eta = { partida, minutos, chegada, usuario: currentUser, data: new Date().toISOString() };
+      const etas = loadLS('lf_etas', []);
+      etas.unshift(eta);
+      saveLS('lf_etas', etas);
+      
+      alert("ETA salvo!");
+    }
+
+    // ===== RESUMO =====
+    function atualizarResumo() {
+      const container = document.getElementById("sumResumo");
+      if (!container) return;
+      
+      if (!nfs || !nfs.length) {
+        container.innerHTML = "<div class='empty'>Nenhuma NF cadastrada ainda.</div>";
+        return;
+      }
+      
+      // Agrupar por rota
+      const agrupado = {};
+      nfs.forEach(nf => {
+        const rota = nf.rota || 'Outra';
+        if (!agrupado[rota]) {
+          agrupado[rota] = {
+            qtd: 0,
+            volumes: 0,
+            peso: 0,
+            m3: 0
+          };
+        }
+        
+        agrupado[rota].qtd += 1;
+        agrupado[rota].volumes += Number(nf.volumes || 0);
+        agrupado[rota].peso += Number(nf.peso || 0);
+        agrupado[rota].m3 += Number(nf.m3 || 0);
+      });
+      
+      let html = '<table class="table-resumo">';
+      html += '<tr><th>Rota</th><th>NFs</th><th>Volumes</th><th>Peso (kg)</th><th>m³</th></tr>';
+      
+      for (const rota in agrupado) {
+        const dados = agrupado[rota];
+        html += `<tr>
+          <td>${rota}</td>
+          <td>${dados.qtd}</td>
+          <td>${dados.volumes}</td>
+          <td>${dados.peso.toFixed(2)}</td>
+          <td>${dados.m3.toFixed(2)}</td>
+        </tr>`;
+      }
+      
+      html += '</table>';
+      container.innerHTML = html;
+    }
+
+    // ===== SCANNER =====
+    async function iniciarScanner() {
+      // Esconder informações anteriores
+      document.getElementById('nfeInfo').classList.remove('visible');
+      
+      // Verificar suporte a BarcodeDetector
+      if (!('BarcodeDetector' in window)) {
+        alert("Seu navegador não suporta leitura de códigos de barras. Use um navegador moderno como Chrome ou Edge.");
+        return;
+      }
+      
+      try {
+        const video = document.getElementById("scanner-video");
+        const container = document.getElementById("scanner-container");
+        
+        videoStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
         });
-    </script>
+        
+        video.srcObject = videoStream;
+        container.classList.add("active");
+        scannerActive = true;
+        
+        // Iniciar detecção de código de barras
+        // Tentar usar datamatrix se disponível
+        const formatos = ['qr_code', 'ean_13', 'code_128', 'data_matrix'];
+        const barcodeDetector = new BarcodeDetector({ formats });
+        
+        scanningInterval = setInterval(async () => {
+          if (!scannerActive) return;
+          
+          try {
+            const barcodes = await barcodeDetector.detect(video);
+            if (barcodes.length > 0) {
+              const barcode = barcodes[0];
+              const rawValue = barcode.rawValue;
+              
+              // Verificar se é uma chave de acesso de NF-e (44 dígitos)
+              const dadosNFE = processarChaveNFE(rawValue);
+              
+              if (dadosNFE) {
+                // É uma NF-e - exibir informações adicionais
+                document.getElementById("nfNumero").value = dadosNFE.numero;
+                exibirInfoNFE(dadosNFE);
+              } else {
+                // É um código de barras comum
+                document.getElementById("nfNumero").value = rawValue;
+              }
+              
+              pararScanner();
+            }
+          } catch (err) {
+            console.error("Erro na detecção:", err);
+          }
+        }, 500);
+        
+      } catch (err) {
+        console.error("Erro ao acessar câmera:", err);
+        alert("Não foi possível acessar a câmera. Verifique as permissões.");
+      }
+    }
+
+    function pararScanner() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+      }
+      
+      if (scanningInterval) {
+        clearInterval(scanningInterval);
+        scanningInterval = null;
+      }
+      
+      scannerActive = false;
+      
+      const container = document.getElementById("scanner-container");
+      if (container) container.classList.remove("active");
+    }
+
+    // ===== PAINEL ADMIN =====
+    function renderAdminPanel() {
+      const container = document.getElementById("adminReport");
+      if (!container) return;
+      
+      if (!nfs || !nfs.length) {
+        container.innerHTML = "<div class='empty'>Nenhuma NF cadastrada ainda.</div>";
+        return;
+      }
+      
+      // Aplicar filtros
+      const rotaFiltro = document.getElementById("adminFilterRota").value;
+      const dataInicio = document.getElementById("adminFilterDataInicio").value;
+      const dataFim = document.getElementById("adminFilterDataFim").value;
+      
+      const nfsFiltradas = nfs.filter(nf => {
+        // Filtrar por rota
+        if (rotaFiltro && nf.rota !== rotaFiltro) return false;
+        
+        // Filtrar por data
+        if (dataInicio || dataFim) {
+          const dataNF = new Date(nf.dataRegistro);
+          const inicio = dataInicio ? new Date(dataInicio) : null;
+          const fim = dataFim ? new Date(dataFim + 'T23:59:59') : null;
+          
+          if (inicio && dataNF < inicio) return false;
+          if (fim && dataNF > fim) return false;
+        }
+        
+        return true;
+      });
+      
+      if (!nfsFiltradas.length) {
+        container.innerHTML = "<div class='empty'>Nenhuma NF encontrada com os filtros aplicados.</div>";
+        return;
+      }
+      
+      // Gerar relatório
+      let html = '<table class="data-table">';
+      html += '<tr><th>Número</th><th>Data/Hora</th><th>Remetente</th><th>Destinatário</th><th>Volumes</th><th>Peso</th><th>Rota</th><th>Usuário</th></tr>';
+      
+      nfsFiltradas.forEach(nf => {
+        html += `<tr>
+          <td>${nf.numero}</td>
+          <td>${new Date(nf.datahora).toLocaleString('pt-BR')}</td>
+          <td>${nf.rem}</td>
+          <td>${nf.dest}</td>
+          <td>${nf.volumes}</td>
+          <td>${nf.peso} kg</td>
+          <td>${nf.rota}</td>
+          <td>${nf.usuario}</td>
+        </tr>`;
+      });
+      
+      html += '</table>';
+      container.innerHTML = html;
+    }
+
+    function applyAdminFilters() {
+      renderAdminPanel();
+    }
+
+    function clearAdminFilters() {
+      document.getElementById("adminFilterRota").value = "";
+      document.getElementById("adminFilterDataInicio").value = "";
+      document.getElementById("adminFilterDataFim").value = "";
+      renderAdminPanel();
+    }
+
+    // ===== SINCRONIZAÇÃO =====
+    async function syncWithServer() {
+      if (!isOnline || !supabase) {
+        alert("Não é possível sincronizar. Verifique sua conexão com a internet.");
+        return;
+      }
+      
+      // Sincronizar NFs pendentes
+      const pendingSync = loadLS(LS.pendingSync, []);
+      const successfulSyncs = [];
+      
+      for (let i = 0; i < pendingSync.length; i++) {
+        const nf = pendingSync[i];
+        const success = await syncNFWithServer(nf);
+        
+        if (success) {
+          successfulSyncs.push(i);
+        }
+      }
+      
+      // Remover as NFs que foram sincronizadas com sucesso
+      if (successfulSyncs.length > 0) {
+        const newPendingSync = pendingSync.filter((_, index) => !successfulSyncs.includes(index));
+        saveLS(LS.pendingSync, newPendingSync);
+      }
+      
+      // Recarregar dados do servidor
+      await loadNfsFromServer();
+      
+      alert(`Sincronização concluída. ${successfulSyncs.length} NFs sincronizadas.`);
+    }
+
+    async function loadNfsFromServer() {
+      if (!isOnline || !supabase) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('notas_fiscais')
+          .select('*')
+          .order('dataRegistro', { ascending: false });
+          
+        if (error) {
+          console.error('Erro ao carregar NFs do servidor:', error);
+          return;
+        }
+        
+        if (data && data.length > 0) {
+          nfs = data;
+          saveLS(LS.nfs, nfs);
+          renderDashboardCards();
+          atualizarResumo();
+          renderAdminPanel();
+        }
+      } catch (error) {
+        console.error('Erro ao carregar NFs do servidor:', error);
+      }
+    }
+
+    // ===== EXPORTAÇÃO =====
+    function exportNFs() {
+      if (!nfs || !nfs.length) {
+        alert("Nenhuma NF para exportar");
+        return;
+      }
+      
+      let csv = "Número,Data/Hora,Remetente,Destinatário,Volumes,Peso (kg),m³,Rota,Responsável,Observações\n";
+      
+      nfs.forEach(nf => {
+        csv += `"${nf.numero}","${new Date(nf.datahora).toLocaleString('pt-BR')}","${nf.rem}","${nf.dest}",${nf.volumes},${nf.peso},${nf.m3},"${nf.rota}","${nf.resp}","${nf.obs}"\n`;
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `nfs_lf_${new Date().toISOString().slice(0,10)}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // ===== INICIALIZAÇÃO =====
+    function initApp() {
+      // Carregar dados
+      nfs = loadLS(LS.nfs, []);
+      
+      // Configurar navegação
+      setupNavigation();
+      
+      // Configurar eventos
+      document.getElementById("btSalvarNF").addEventListener("click", salvarNF);
+      document.getElementById("btCalcETA").addEventListener("click", calcularETA);
+      document.getElementById("btSalvarETA").addEventListener("click", salvarETA);
+      document.getElementById("btScannerNF").addEventListener("click", iniciarScanner);
+      document.getElementById("btStopScanner").addEventListener("click", pararScanner);
+      
+      // Configurar data/hora atual como padrão
+      const now = new Date();
+      const nowStr = now.toISOString().slice(0, 16);
+      document.getElementById("nfDataHora").value = nowStr;
+      document.getElementById("etaPartida").value = nowStr;
+      
+      // Inicializar visualizações
+      renderDashboardCards();
+      atualizarResumo();
+      
+      // Se estiver online, tentar carregar dados do servidor
+      if (isOnline && supabase) {
+        loadNfsFromServer();
+      }
+    }
+
+    // Inicializar quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', setupLogin);
+  </script>
 </body>
 </html>
