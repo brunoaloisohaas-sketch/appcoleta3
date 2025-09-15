@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Fretes - LF Logística</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+        
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        
+        .suggestion-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .suggestion-item:hover {
+            background: #f9f9f9;
+        }
+        
+        .client-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .calculations {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            display: none;
+        }
+        
+        .calculation-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .calculation-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+            margin-top: 15px;
+        }
+        
+        .btn:hover {
+            background: #c0392b;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            input, select {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-truck-moving logo-icon"></i>
+                <div class="logo-text">LF LOGÍSTICA</div>
+            </div>
+            <h1>Calculadora de Fretes</h1>
+            <div class="subtitle">Cálculo rápido e preciso de valores de frete</div>
+        </div>
+        
+        <div class="content">
+            <div class="form-group">
+                <label for="clientSearch">Cliente</label>
+                <div class="search-container">
+                    <input type="text" id="clientSearch" placeholder="Digite o nome do cliente...">
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+            </div>
+            
+            <div class="client-info" id="clientInfo">
+                <div class="info-row">
+                    <span class="info-label">CNPJ:</span>
+                    <span id="cnpjValue">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Percentual:</span>
+                    <span id="percentValue">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ICMS:</span>
+                    <span id="icmsValue">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Frete Mínimo:</span>
+                    <span id="minFreteValue">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Observações:</span>
+                    <span id="obsValue">-</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="productType">Tipo de Produto (se aplicável)</label>
+                <select id="productType">
+                    <option value="default">Padrão</option>
+                    <option value="moveis">Móveis</option>
+                    <option value="estofados">Estofados</option>
+                    <option value="decoracao">Decoração</option>
+                    <option value="contentores">Contentores</option>
+                    <option value="objetos">Objetos</option>
+                    <option value="cavaletti">Cavaletti</option>
+                    <option value="acessorios">Acessórios</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="valorNF">Valor da Nota Fiscal (R$)</label>
+                <input type="number" id="valorNF" placeholder="0,00" min="0" step="0.01">
+            </div>
+            
+            <button class="btn" id="calculateBtn">Calcular Frete</button>
+            
+            <div class="calculations" id="calculations">
+                <div class="calculation-row">
+                    <span>Percentual aplicado:</span>
+                    <span id="calcPercent">0%</span>
+                </div>
+                <div class="calculation-row">
+                    <span>Valor do frete:</span>
+                    <span id="calcFrete">R$ 0,00</span>
+                </div>
+                <div class="calculation-row">
+                    <span>Frete mínimo:</span>
+                    <span id="calcMinFrete">R$ 0,00</span>
+                </div>
+                <div class="calculation-row">
+                    <span>ICMS (7%):</span>
+                    <span id="calcICMS">R$ 0,00</span>
+                </div>
+                <div class="calculation-row">
+                    <span>Valor final:</span>
+                    <span id="calcFinal">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>LF Logística &copy; 2023 - Todos os direitos reservados</p>
+    </div>
+
+    <script>
+        // Base de dados completa de clientes
+        const clientes = [
+            { nome: "Mark Tripas", cnpj: "04.208.651/0001-22", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "Frete em 20%" },
+            { nome: "Helio Lucio Rabelo", cnpj: "17.618.724/0001-04", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "Frete em 20%" },
+            { nome: "Lara Embalagens", cnpj: "05.590.010/0001-48", percentual: 23, icms: "Não", freteMinimo: 0, observacao: "Frete em 23%" },
+            { nome: "Unitripas Condimentos e Tripas", cnpj: "07.973.018/0001-19", percentual: 21, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "Luciana Basque", cnpj: "07.651.638/0001-31", percentual: 21, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "Asmos Produtos Alimentícios", cnpj: "", percentual: 19, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "Laticínio Minas Gerais", cnpj: "", percentual: 22, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "Geneseas Aquacultura", cnpj: "", percentual: 24, icms: "Sim", freteMinimo: 0, observacao: "Aparecida do Taboado – MS" },
+            { 
+                nome: "DISTRIBUIDORA PINGUIM", 
+                cnpj: "13.547.501/0001-34", 
+                percentual: 24, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Contentores - 24% / Móveis - 17%",
+                variacoes: { contentores: 24, moveis: 17 }
+            },
+            { nome: "VINICOLA SÃO LUIS", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,40 AO KG + ICMS" },
+            { nome: "Forma Corporativo", cnpj: "", percentual: 19, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "TERRA BRASILIES", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
+            { 
+                nome: "TALYS COMERCIAL", 
+                cnpj: "", 
+                percentual: 13.5, 
+                icms: "Não", 
+                freteMinimo: 350, 
+                observacao: "Objetos decoração 13,5%, Móveis decoração 19,5%, Estofados 21,5%", 
+                variacoes: { objetos: 13.5, moveis: 19.5, estofados: 21.5 }
+            },
+            { nome: "ACASA COMERCIO", cnpj: "", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "AUCINO E PINHEIRO", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 340, observacao: "" },
+            { nome: "AVEL MOVEIS", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "para Fortaleza" },
+            { 
+                nome: "ANA NERY", 
+                cnpj: "06.421.259/0003-54", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 280, 
+                observacao: "MÓVEIS EM GERAL 16% FINAL, ESTOFADOS 20% FINAL, OBJETOS 9%",
+                variacoes: { moveis: 16, estofados: 20, objetos: 9 }
+            },
+            { nome: "JAB SIEBRA REPRESENTAÇOES", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "Fornecedor Espaço Casa e Jardim 16% Final" },
+            { nome: "FÁBRICA DE MOVEIS FLORENSE LTDA", cnpj: "89.962.294/0001-46", percentual: 8, icms: "Não", freteMinimo: 80, observacao: "" },
+            { nome: "VOLARE", cnpj: "16.633.145/0003-21", percentual: 8, icms: "Não", freteMinimo: 80, observacao: "" },
+            { 
+                nome: "ALTO PADRÃO/ SCA", 
+                cnpj: "", 
+                percentual: 10, 
+                icms: "Não", 
+                freteMinimo: 40, 
+                observacao: "Fortaleza - FOB: R$ 40,00 / CIF: R$ 240,00", 
+                variacoes: { fob: 10, cif: 10 }
+            },
+            { nome: "Cliente Venture Capital", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Part. da Fábrica SCA - Tomador: Kfa Projetos e Serviços" },
+            { nome: "A Renovar de São Luís", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "CITTA MOBILE SÃO LUIS", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "Organo Interiores LTDA", cnpj: "", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "Sem mínimo" },
+            { nome: "A & M MOVEIS PLANEJADOS LTDA", cnpj: "43.724.401/0001-05", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "Sem mínimo" },
+            { nome: "AMBIANCE COMERCIO DE MOVEIS PLANEJADOS", cnpj: "32.972.359/0001-17", percentual: 13, icms: "Sim", freteMinimo: 320, observacao: "TAXA CTE 15,00" },
+            { nome: "AGUIAR E LEVITA", cnpj: "", percentual: 12, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "J F DA SILVA", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "ARAMOVEIS INmaiTICA LTDA ME", cnpj: "03.131.885/0001-32", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "ARISTEU PIRES", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "CIF" },
+            { nome: "ATELIER HOME GARDEN", cnpj: "22.337.770/0001-67", percentual: 32, icms: "Não", freteMinimo: 0, observacao: "NÃO COBRAR FRETE MÍNIMO" },
+            { 
+                nome: "ARTMOVEIS COMERCIO DE MOVEIS LTDA", 
+                cnpj: "", 
+                percentual: 18, 
+                icms: "Não", 
+                freteMinimo: 320, 
+                observacao: "ESTOFADOS 18% / DECORAÇÃO 16%",
+                variacoes: { estofados: 18, decoracao: 16 }
+            },
+            { 
+                nome: "A R COMERCIO (BRETON) MANAUS", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 340, 
+                observacao: "Geral 16% / Objetos 12%",
+                variacoes: { default: 16, objetos: 12 }
+            },
+            { 
+                nome: "Hong Possas Moveis de Decoração Ltda.", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 360, 
+                observacao: "Geral 16% / Objetos 10%",
+                variacoes: { default: 16, objetos: 10 }
+            },
+            { nome: "LACASA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "ESCRITA MOVEIS", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "ALVES E GALGANI LTDA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "A C C FIGUEIREDO", cnpj: "", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "ALEXANDRE JEREISSATI", cnpj: "11.294.772/0001-08", percentual: 14, icms: "Não", freteMinimo: 320, observacao: "" },
+            { 
+                nome: "A C CUNHA", 
+                cnpj: "06.080.094/0001-32", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 350, 
+                observacao: "MOVEIS PLANEJADOS 16%, CAVALETTI 13%, DECORAÇÕES 16%, ESTOFADOS 18%, ACESSÓRIOS 10%",
+                variacoes: { moveis: 16, cavaletti: 13, decoracao: 16, estofados: 18, acessorios: 10 }
+            },
+            { nome: "A M N GOMIDE ME", cnpj: "11.801.548/0003-19", percentual: 13, icms: "Não", freteMinimo: 40, observacao: "CINEX/ANCESKI/UNICASA/FINOTOC - CAPITAL" },
+            { nome: "BANIWA / SCR COMERCIO DE MOVEIS", cnpj: "", percentual: 22, icms: "Sim", freteMinimo: 390, observacao: "" },
+            { nome: "BAZEI", cnpj: "", percentual: 0.38, icms: "Não", freteMinimo: 0, observacao: "Ad Valorem 0,38% + Taxas" },
+            { nome: "BITTENCOURT E DIAS LTDA ME", cnpj: "10.443.949/0001-10", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
+            { nome: "BONHO REPRESENTAÇÕES", cnpj: "26.253.593/0001-91", percentual: 12.5, icms: "Não", freteMinimo: 0, observacao: "Florense Manaus / Sem mínimo" },
+            { nome: "BONHO REPRESENTAÇÕES", cnpj: "26.253.593/0001-91", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "Cliente Francisco Charles" },
+            { nome: "BT MA COMERCIO E SERVICO LTDA", cnpj: "26.826.932/0001-81", percentual: 15, icms: "Não", freteMinimo: 320, observacao: "" },
+            { nome: "BC COMERCIO DE MOVEIS LTDA", cnpj: "29.346.796/0001-10", percentual: 17.5, icms: "Não", freteMinimo: 350, observacao: "TAXA CT-E: R$ 25,00" },
+            { nome: "BITAR MÓVEIS PLANEJADOS", cnpj: "02.214.821/0001-09", percentual: 10, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
+            { nome: "BENEDITA ALVES FERREIRA EIRELI ME", cnpj: "23.962.987/0001-20", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "CASAGRANDE", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "RMC", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "CICERA MARCIANA CRUZ S. COM.MÓVEIS", cnpj: "44352793000183", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Fortaleza" },
+            { 
+                nome: "CINEX", 
+                cnpj: "", 
+                percentual: 13, 
+                icms: "Não", 
+                freteMinimo: 390, 
+                observacao: "até Manaus / 15% até Boa Vista",
+                variacoes: { manaus: 13, boavista: 15 }
+            },
+            { nome: "CENTER MÓVEIS LTDA SÃO LUIS", cnpj: "26.723.257/0001-65", percentual: 18, icms: "Não", freteMinimo: 70, observacao: "TAXA CT-E: R$ 15,00" },
+            { nome: "CASA CHIQUE OUTLET", cnpj: "", percentual: 22, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
+            { nome: "CROCODILO BABY LTDA", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "CREATIVE DESIGN", cnpj: "03.471.254/0001-86", percentual: 14, icms: "Sim", freteMinimo: 0, observacao: "TAXA CT-E: 10,00" },
+            { nome: "CALLOU E BRAGA COMERCIO DE MOVEIS PLANEJADOS LTDA", cnpj: "26.905.856/0001-08", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "COMERCIAL ELETROMOVEIS", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 350, observacao: "Vários fornecedores" },
+            { 
+                nome: "CASA BONITA MAGAZINE LTDA", 
+                cnpj: "10.387.602/0007-92", 
+                percentual: 8, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "TAPETES E DECORAÇÃO",
+                variacoes: { decoracao: 8, moveis: 12, estofados: 15 }
+            },
+            { nome: "CHAPA NORTE COM.DE MOV.E ARQUITETURA LTDA", cnpj: "", percentual: 17.5, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "CLASSE MOVEIS", 
+                cnpj: "69.580.744/0001-29", 
+                percentual: 17.2, 
+                icms: "Não", 
+                freteMinimo: 240, 
+                observacao: "MÓVEIS E DECORAÇÃO 17.2%, ESTOFADOS 23.7%",
+                variacoes: { moveis: 17.2, decoracao: 17.2, estofados: 23.7 }
+            },
+            { nome: "CRIARE MANAUS / G DA S AMORIM", cnpj: "", percentual: 17.5, icms: "Sim", freteMinimo: 390, observacao: "+ Taxa 25,00+ ICMS" },
+            { nome: "C B DE SOUZA LTDA", cnpj: "49.437.665/0001-56", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "Columbia comercial", cnpj: "83674100000130", percentual: 16.5, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "DACOLONIA", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Manaus 16% / Boa Vista 18%",
+                variacoes: { manaus: 16, boavista: 18 }
+            },
+            { 
+                nome: "Dalla Costa /PRADEL /J L TORRES", 
+                cnpj: "", 
+                percentual: 18, 
+                icms: "Não", 
+                freteMinimo: 350, 
+                observacao: "CAPITAL 18% / INTERIOR 20%",
+                variacoes: { capital: 18, interior: 20 }
+            },
+            { nome: "D F N VERONEZE", cnpj: "", percentual: 14.5, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "DE CASA", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "DJE DALMOBILE SÃO LUIS", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 350, observacao: "" },
+            { nome: "D E C COMERCIO E REPRESENTACOES LTDA", cnpj: "01.622.589/0001-22", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "DPC COMERCIO VAREJISTA", 
+                cnpj: "", 
+                percentual: 22, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Fratini 22%, Gebwook 16%, Plaxmetal 16%, Cavaletti 14%",
+                variacoes: { fratini: 22, gebwook: 16, plaxmetal: 16, cavaletti: 14 }
+            },
+            { 
+                nome: "DESIGN COM DE MOVEIS LTDA", 
+                cnpj: "26049400000130", 
+                percentual: 14, 
+                icms: "Não", 
+                freteMinimo: 300, 
+                observacao: "MOVEIS FINAL - ORIGEM RS 14%, ESTOFADOS FINAL - ORIGEM RS 16%, MOVEIS FINAL - ORIGEM SC/PR/SP 16%, ESTOFADOS FINAL - ORIGEM SC/PR/SP 18%",
+                variacoes: { rs_moveis: 14, rs_estofados: 16, scprsp_moveis: 16, scprsp_estofados: 18 }
+            },
+            { nome: "EAGLE EMPREENDIMENTOS LTDA", cnpj: "42.592.289/0001-25", percentual: 16, icms: "Não", freteMinimo: 270, observacao: "R$ 320,00 + Icms (cubagem)" },
+            { nome: "RODRIGO DUARTE VARELA JUNIOR", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "CONSIDERAR 14%" },
+            { nome: "D e S LUCENA COMÉRCIO DE MÓVEIS E PLANEJADOS LTDA", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "DISTRIBUIDORA PINGUIM", 
+                cnpj: "", 
+                percentual: 17, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "MÓVEIS 17% / CAIXAS/CONTENTORES 24%",
+                variacoes: { moveis: 17, contentores: 24 }
+            },
+            { nome: "DE TONI", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "Ver tabela específica por região" },
+            { 
+                nome: "DESCONEXO/ VC LINS/ DNX", 
+                cnpj: "", 
+                percentual: 15, 
+                icms: "Não", 
+                freteMinimo: 320, 
+                observacao: "Fornecedores RS 15%, Fornecedores SP 12%, Demais fornecedores SC/PR 17%",
+                variacoes: { rs: 15, sp: 12, scpr: 17 }
+            },
+            { 
+                nome: "DINAMICA", 
+                cnpj: "", 
+                percentual: 10, 
+                icms: "Sim", 
+                freteMinimo: 340, 
+                observacao: "OBJETOS DE DECORAÇÃO 10%, MOVEIS DECORAÇÃO 18%, ESTOFADOS 20%",
+                variacoes: { objetos: 10, moveis: 18, estofados: 20 }
+            },
+            { nome: "DOMI INDUSTRIA DE MOVEIS E METAIS", cnpj: "32.301.406/0001-09", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "DULAR MOVEIS MA", 
+                cnpj: "", 
+                percentual: 20, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL E REGIÃO METROPOLITANA 20%, INTERIOR 23%",
+                variacoes: { capital: 20, interior: 23 }
+            },
+            { 
+                nome: "DULCE SILVEIRA", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "DECORAÇÃO 16%, ESTOFADOS 20%",
+                variacoes: { decoracao: 16, estofados: 20 }
+            },
+            { nome: "ELLEN VANESSA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "EDOVILHO/ PIVOTTO", cnpj: "", percentual: 7.5, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "EVIDENCIA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 100, observacao: "MÓVEIS – ESTOFADOS - DECORAÇÃO + TAXA CT-E: R$ 15,00" },
+            { nome: "EROMIDIO MARTINS DE OLIVEIRA", cnpj: "63329200000130", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "ERICK CAVALCANTE", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
+            { nome: "ESPACO COM DE MÓVEIS E DECORAÇÃO", cnpj: "06.287.879/0001-80", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "ESPACO COMERCIAL MA", cnpj: "12971000000130", percentual: 14.5, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "ESPAÇO DESIGN", cnpj: "05.753.036/0001-60", percentual: 16, icms: "Sim", freteMinimo: 240, observacao: "" },
+            { nome: "ESTOFADOS FRANK", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "verificar cubagem" },
+            { nome: "EDNILTON DINIZ FERREIRA", cnpj: "27.030.455/0001-06", percentual: 18, icms: "Sim", freteMinimo: 100, observacao: "TAXA DE CT-E: R$ 15,00" },
+            { 
+                nome: "Embale Embalagens de Plastico e Papel Ltda", 
+                cnpj: "02.195.311/0001-89", 
+                percentual: 10, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "G PANIZ, TEDESCO, SULPAC, PROGÁS/BRAESI, TOMAZI 10%, FORNO TEDESCO 14%, REFRIMATE/VENANCIO 16%, PISANI 17%",
+                variacoes: { gpaniz: 10, fornotedesco: 14, refrimate: 16, pisani: 17 }
+            },
+            { nome: "EMPORIO SS COM MOV E DECORAÇÕES LTDA", cnpj: "12.374.367/0002-35", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "ESPACO CONFORTO LTDA", cnpj: "16.562.359/0001-92", percentual: 15, icms: "Sim", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
+            { nome: "ETEVALDO DE DEUS", cnpj: "26.809.214/0001-05", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "EUROMANAUS", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "ENGEXATA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "EQUIPAR", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 350, observacao: "R$ 420 AO METRO CUBICO" },
+            { nome: "F A Z LIMA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "F.A DE ARUJO MÓVEIS", cnpj: "11.584.750/0002-55", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "F A DE ARAUJO NOLETO MÓVEIS" },
+            { nome: "FI MOVEIS", cnpj: "73.852.147/0001-83", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
+            { nome: "FRATINI", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "TABELA PASTA COMERCIAL" },
+            { 
+                nome: "FATIMA R.G. LIMA COM", 
+                cnpj: "01.378.094/0001-08", 
+                percentual: 18, 
+                icms: "Não", 
+                freteMinimo: 240, 
+                observacao: "Objetos de decoração/móveis em geral 18%, MOVEIS, CADEIRAS, APARADORES EM GERAL - REGIÃO SP 15%, TAPETES, LUSTRES, QUADROS, OBJ DECORAÇÃO - REGIÃO SP 9%",
+                variacoes: { default: 18, moveis_sp: 15, objetos_sp: 9 }
+            },
+            { nome: "FERREIRA E CASTRO", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 320, observacao: "" },
+            { nome: "F DOS S MONTEIRO NETO", cnpj: "29132708/0001-88", percentual: 16, icms: "Sim", freteMinimo: 240, observacao: "" },
+            { nome: "F E F COMERCIO DE MÓVEIS", cnpj: "11.791.139/0001-17", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "FF HOLANDA SOUTO ME", 
+                cnpj: "04.000.579/0001-43", 
+                percentual: 23, 
+                icms: "Não", 
+                freteMinimo: 120, 
+                observacao: "MOVEIS CARRARO 23%, MOVEL BENTO DITÁLIA DALLA COSTA 18%, DITÁLIA MOVEIS 20%",
+                variacoes: { carraro: 23, dalla_costa: 18, ditalia: 20 }
+            },
+            { nome: "F H LINHARES NETO", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 350, observacao: "" },
+            { nome: "FJG COMÉRCIO E SERVIÇOS", cnpj: "46453700000130", percentual: 18, icms: "Não", freteMinimo: 280, observacao: "" },
+            { 
+                nome: "FORJASUL", 
+                cnpj: "", 
+                percentual: 0, 
+                icms: "Não", 
+                freteMinimo: 75, 
+                observacao: "CAPITAL R$ 75,00 / INTERIOR R$ 90,00",
+                variacoes: { capital: 75, interior: 90 }
+            },
+            { 
+                nome: "FORMA ENGENHARIA COM E IND REPRESENTAÇÃO LTDA", 
+                cnpj: "23.518.798/0001-63", 
+                percentual: 13, 
+                icms: "Não", 
+                freteMinimo: 40, 
+                observacao: "PLANEJADOS (sca) - FOB R$ 40,00 / MOVEIS R$ 270,00",
+                variacoes: { planejados: 13, moveis: 0 }
+            },
+            { nome: "FORMA ENGENHARIA SP", cnpj: "", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "FORMA CORPORATIVO BELEM", 
+                cnpj: "", 
+                percentual: 19, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Gebb Work 19%, plaxmetal 19%",
+                variacoes: { gebbwork: 19, plaxmetal: 19 }
+            },
+            { nome: "F DOS SANTOS S NETO COMERCIO & SERVIÇOS", cnpj: "29.132.708/0001-88", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
+            { nome: "GG COMERCIO", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
+            { nome: "RV3 ENGENHARIA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "ESTOFADOS VERIFICAR" },
+            { nome: "GUERRA E GUERRA", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "GS3 Comercio de Moveis LTDA", cnpj: "", percentual: 9, icms: "Não", freteMinimo: 240, observacao: "" },
+            { nome: "GILMAR RODRIGUES DE MENDONÇA ARAUJO", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,40 ao kg+ ICMS" },
+            { nome: "GALVANOTEK FORTALEZA - CE", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "GENIALFLEX", 
+                cnpj: "", 
+                percentual: 18, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "CAPITAIS 18%, INTERIOR 20%",
+                variacoes: { capital: 18, interior: 20 }
+            },
+            { 
+                nome: "GIRAO MOVEIS/ E & E comercio/ E e E", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 320, 
+                observacao: "Móveis 16%, Estofados 18%",
+                variacoes: { moveis: 16, estofados: 18 }
+            },
+            { 
+                nome: "G M L COMERCIO E REPRESENTAÇÕES", 
+                cnpj: "", 
+                percentual: 35, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Pisani, RIZADINHA 35%, Arte Farma, Metalúrgica Venâncio 25%",
+                variacoes: { pisani: 35, artefarma: 25 }
+            },
+            { 
+                nome: "HEITOR MOVEIS", 
+                cnpj: "", 
+                percentual: 70, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "NF COM MARCACÕES 70%, SEM MARCAÇÕES NF CHEIA 18%",
+                variacoes: { marcacoes: 70, sem_marcacoes: 18 }
+            },
+            { nome: "HERCOSUL", cnpj: "03.252.545/0001-83", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,25/KG + ICMS" },
+            { nome: "HERCULANO TEIXEIRA VIEIRA ME", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "A HERCULANO HACK", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "Hasat Telecomunicações LTDA", cnpj: "32.193.900/0001-58", percentual: 16, icms: "Não", freteMinimo: 360, observacao: "" },
+            { nome: "J FABIANO ALVES JUNIOR EIRELI", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "J ODENCIO STAGE OFFICE", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "JAQUELINE ALVES MOREIRA MARTINS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 350, observacao: "" },
+            { 
+                nome: "MADESERRA MOVEIS E MADEIRAS LTDA", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 240, 
+                observacao: "Móveis em geral 16%, Estofados verificar(250,00 ao metro cubico)",
+                variacoes: { moveis: 16, estofados: 0 }
+            },
+            { nome: "IZABEL C C GUERRA", cnpj: "04.846.992/00001-23", percentual: 9.5, icms: "Não", freteMinimo: 0, observacao: "NÃO COBRAR FRETE MÍNIMO" },
+            { nome: "IJP COMÉRCIO DE MÓVEIS LTDA", cnpj: "45.311.237/0002-02", percentual: 16.5, icms: "Não", freteMinimo: 380, observacao: "" },
+            { nome: "IJP HOME COMERCIO", cnpj: "", percentual: 14.5, icms: "Sim", freteMinimo: 380, observacao: "" },
+            { nome: "IDELLI / FORTALEZA MOBILE", cnpj: "", percentual: 12, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "IRMÃOS OLIVEIRA COMERCIO DE MÓVEIS LTDA", 
+                cnpj: "10.908.615/0001-74", 
+                percentual: 17, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "MOVEIS K1/DITÁLIA/RODIAL/BARCELONA + PEDÁGIO 3.8% 17%, DALLA COSTA + PEDÁGIO 15%",
+                variacoes: { k1: 17, dalla_costa: 15 }
+            },
+            { nome: "IPE COMÉRCIO DE MÓVEIS E EQUIPAMENTOS", cnpj: "33817900000130", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "Quando for teresina Ipê - Não tem frete Mínimo" },
+            { nome: "ITALINEA MANAUS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 280, observacao: "" },
+            { 
+                nome: "MSUL MÓVEIS", 
+                cnpj: "", 
+                percentual: 18, 
+                icms: "Sim", 
+                freteMinimo: 320, 
+                observacao: "CAPITAL 18% R$ 320,00 / INTERIOR 18% R$ 360,00",
+                variacoes: { capital: 18, interior: 18 }
+            },
+            { nome: "Mobile Comercio de Moveis -AM", cnpj: "", percentual: 17.5, icms: "Sim", freteMinimo: 360, observacao: "" },
+            { 
+                nome: "JOSE ALVES NETO E CIA LTDA (FILIAL)", 
+                cnpj: "06.846.349/0006-30", 
+                percentual: 14, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Rivatti 14%, Demais 16%",
+                variacoes: { rivatti: 14, demais: 16 }
+            },
+            { nome: "JOSE DA COSTA VELOSO", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 350, observacao: "" },
+            { nome: "JRD BRANDÃO", cnpj: "23.511.454/0002-03", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
+            { nome: "JCL COMÉRCIO", cnpj: "17.213.256/0001-80", percentual: 18, icms: "Sim", freteMinimo: 390, observacao: "" },
+            { nome: "JLN MODULADOS", cnpj: "05.336.090/0001-00", percentual: 13, icms: "Não", freteMinimo: 390, observacao: "" },
+            { 
+                nome: "JCMR2 COMERCIO E REPRESENTACOES DE MOVEIS LTDA", 
+                cnpj: "", 
+                percentual: 15, 
+                icms: "Não", 
+                freteMinimo: 320, 
+                observacao: "MOVEIS PLANEJADOS 15%, CLIENTES FINAIS 16%",
+                variacoes: { planejados: 15, final: 16 }
+            },
+            { nome: "J A COMERCIO DE MOVEIS LTDA", cnpj: "03.048.265/0002-39", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "VERIFICAR SEMPRE SE É MEIA NOTA" },
+            { nome: "J E M COMERCIO DE MOVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "JANE MARY DE OLIVEIRA BARROS", cnpj: "", percentual: 13, icms: "Não", freteMinimo: 0, observacao: "SCA/SLIMSTONE/FINOTOC - VIA TERESINA FORMA ENGENHARIA" },
+            { nome: "JANE BONTEMPO", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "JG MOVEIS/ MOVENORTE/ BEIRA ALTA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "s/valor nota fiscal + ICMS" },
+            { nome: "FRANCO E AVELINO", cnpj: "26841200000130", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "FA MOVEIS PLANEJADOS", cnpj: "21.091.588/0001-02", percentual: 18.5, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
+            { 
+                nome: "FRANCISCO ANDRE MELO OLIVEIRA", 
+                cnpj: "", 
+                percentual: 10, 
+                icms: "Não", 
+                freteMinimo: 320, 
+                observacao: "AD VALOREM – 0,38%",
+                variacoes: { advalorem: 0.38 }
+            },
+            { nome: "HYGGE PROJETOS DE ENGENHARIA, CONSTRUCOES E CONSULTORIA – EI", cnpj: "", percentual: 20, icms: "Sim", freteMinimo: 390, observacao: "" },
+            { nome: "KADOSHhome", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "SARRECY COMERCIO VAREJISTA DE MÓVEIS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
+            { nome: "KLM", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 1320, observacao: "" },
+            { nome: "KOWORX", cnpj: "43.486.100/0001-82", percentual: 18, icms: "Sim", freteMinimo: 320, observacao: "FRANQUIA MY BOX SÃO LUIS" },
+            { 
+                nome: "LILIA COMERCIO E REPRES", 
+                cnpj: "06.841.837/0001-40", 
+                percentual: 15, 
+                icms: "Sim", 
+                freteMinimo: 350, 
+                observacao: "MÓVEIS E DECORAÇÕES ou R$ 360,00 ao M³ + ICMS, COLCHÕES E ESTOFADOS ou R$ 360,00 ao M³ + ICMS",
+                variacoes: { moveis: 15, estofados: 15 }
+            },
+            { nome: "LANA OSTERNO", cnpj: "11.896.125/0001-37", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "L E L MOVEIS PLANEJADO", cnpj: "26.135.197/0001-60", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "I EL INTERIORES", cnpj: "34.352.848/0001-00", percentual: 18, icms: "Não", freteMinimo: 300, observacao: "" },
+            { nome: "L E COMERCIAL DE MÓVEIS LTDA", cnpj: "36.324.024/0001-43", percentual: 10, icms: "Não", freteMinimo: 360, observacao: "" },
+            { nome: "L L MOVEIS LTDA", cnpj: "23.583.717/0001-09", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "L N L COMERCIAL", 
+                cnpj: "28.808.853/0001-73", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 360, 
+                observacao: "MOVEIS E DECORAÇÃO 16%, ESTOFADOS 19%",
+                variacoes: { moveis: 16, decoracao: 16, estofados: 19 }
+            },
+            { nome: "L e N Comercio de Moveis Ltda – Epp", cnpj: "20370400000130", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "L R NOGUEIRA AIRES", cnpj: "10.531.054/0001-37", percentual: 16, icms: "Não", freteMinimo: 360, observacao: "" },
+            { nome: "LS COMERCIO DE MOVEIS LTDA", cnpj: "03.293.013/0001-94", percentual: 14, icms: "Não", freteMinimo: 320, observacao: "FINAL" },
+            { nome: "LOURENA OLIVEIRA ARAUJO", cnpj: "21.399.504/0001-04", percentual: 13, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "LOUVRE MAGAZINE", cnpj: "10.854.623/0001-85", percentual: 17, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "LOJAS PERIN", 
+                cnpj: "", 
+                percentual: 11, 
+                icms: "Sim", 
+                freteMinimo: 390, 
+                observacao: "Objetos de Decoração 11%, Móveis de Madeira 19%, Sofás e Estofados 28%",
+                variacoes: { objetos: 11, moveis: 19, estofados: 28 }
+            },
+            { nome: "ITALINEA", cnpj: "", percentual: 19, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "LADOSUL/ V SIRTOLI DECORACOES EPP", 
+                cnpj: "12.592.548/0001-57", 
+                percentual: 16, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "Objetos e Móveis de decoração s/NF + ICMS 16% ou R$ 300,00 ao m³ + ICMS, Estofados s/NF + ICMS 20% ou R$ 300,00 ao m³ + ICMS",
+                variacoes: { decoracao: 16, estofados: 20 }
+            },
+            { nome: "LUMINUM DECORELUX", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "CE-FORTALEZA" },
+            { 
+                nome: "MAISON COMÉRCIO DE MÓVEIS E DECORAÇÃO LTDA", 
+                cnpj: "", 
+                percentual: 18, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "MÓVEIS 18%, ESTOFADOS 20%",
+                variacoes: { moveis: 18, estofados: 20 }
+            },
+            { nome: "MANOEL JANDA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "M G F VIDAL JUAZEIRO DO NORTE", cnpj: "", percentual: 10, icms: "Não", freteMinimo: 0, observacao: "R$ 25,00 TAXA CT-E" },
+            { 
+                nome: "MÓVEIS HERVAL", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "LINHA MÓVEIS EM GERAL - CAPITAL 16%, INTERIOR 18%, LINHA MÓVEIS (ROUPEIROS) - CAPITAL 24%, INTERIOR 26%, LINHA ESTOFADOS - CAPITAL 22%, INTERIOR 25% + TAXA CT-E: R$ 25,00",
+                variacoes: { moveis_capital: 16, moveis_interior: 18, roupeiros_capital: 24, roupeiros_interior: 26, estofados_capital: 22, estofados_interior: 25 }
+            },
+            { nome: "MOVEIS BELINI", cnpj: "", percentual: 25, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "MESA E ARTE", cnpj: "", percentual: 17, icms: "Não", freteMinimo: 350, observacao: "" },
+            { nome: "MICRODADOS CAXIAS MA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "HARMONY EMPREENDIMENTOS IMOBILIARIOS LTDA", cnpj: "02.497.060/0001-97", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
+            { 
+                nome: "ADEMIR MULLER/ COMPARSI/ VALDIR RODRIGUES", 
+                cnpj: "", 
+                percentual: 22, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL - nota com risco assinada 50% 22%, INTERIOR - nota com risco assinada 50% 24%",
+                variacoes: { capital: 22, interior: 24 }
+            },
+            { nome: "NOVA ALIANÇA", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "1,90 AO KG + ICMS" },
+            { nome: "M G DE SOUZA E PASSOS FERREIRA LTDA", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 340, observacao: "" },
+            { nome: "MAGAZINE FORTALEZA", cnpj: "60975000000120", percentual: 17, icms: "Não", freteMinimo: 320, observacao: "" },
+            { 
+                nome: "MADERO OU SIERRA", 
+                cnpj: "", 
+                percentual: 12, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Mercadoria devolução Fortaleza X Gramado 12%, Mercadorias Sierra x Madero= Gramado x Fortaleza 18%, Mercadorias Sierra e Madeiro Clientes Finais 12%",
+                variacoes: { devolucao: 12, sierra_madero: 18, clientes_finais: 12 }
+            },
+            { nome: "MAVILAR MOVEIS", cnpj: "34.023.199/0001-95", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "Francisco André Melo", cnpj: "", percentual: 11.5, icms: "Sim", freteMinimo: 0, observacao: "MF comercio" },
+            { nome: "M S COMERCIO DE MOVEIS LTDA ME", cnpj: "09.328.859/0001-07", percentual: 15, icms: "Sim", freteMinimo: 0, observacao: "+ TAXA 15,00 - NÃO TEM FRETE MINÍMO" },
+            { nome: "M M COMERCIO E PLANEJADOS", cnpj: "28.431.699/0001-63", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "+ TAXA 15,00 - NÃO TEM FRETE MINÍMO" },
+            { nome: "M S MOVEIS E ELETRO – CE Juazeiro", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "M M MARCENARIA MODERNA", cnpj: "", percentual: 20, icms: "Não", freteMinimo: 360, observacao: "" },
+            { 
+                nome: "POLITORNO", 
+                cnpj: "", 
+                percentual: 20, 
+                icms: "Sim", 
+                freteMinimo: 430, 
+                observacao: "Manaus 20% R$ 430,00, Boa Vista 22% R$ 490,00, Capital 18% R$ 350,00, Interior I 20% R$ 390,00, Interior II 22% R$ 450,00",
+                variacoes: { manaus: 20, boavista: 22, capital: 18, interior_i: 20, interior_ii: 22 }
+            },
+            { nome: "MASSOTI FORTALEZA", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "M. DA CRUZ G. DE A. BARBOSA", 
+                cnpj: "04.468.160/0001-10", 
+                percentual: 10, 
+                icms: "Não", 
+                freteMinimo: 240, 
+                observacao: "Objetos decoração 10%, Móveis decoração 15%, Estofados 17%",
+                variacoes: { objetos: 10, moveis: 15, estofados: 17 }
+            },
+            { 
+                nome: "M G SILVA MONTEIRO E CIA LTDA EPP/ Todeschini Manaus", 
+                cnpj: "87.547.170/0001-79", 
+                percentual: 13, 
+                icms: "Não", 
+                freteMinimo: 280, 
+                observacao: "SOBRE OS PRODUTOS + TAXA CT-E: 15,00 + ICMS",
+                variacoes: { default: 13 }
+            },
+            { nome: "MG SILVA MONTEIRO", cnpj: "07.234.176/00001-57", percentual: 18, icms: "Não", freteMinimo: 350, observacao: "SOBRE OS PRODUTOS" },
+            { nome: "MAGAZINE LILIANE", cnpj: "11.590.296/0045-85", percentual: 13, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "MAGAZINE DOS MÓVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "MIL COMERCIO", cnpj: "08.352.947/0001-73", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "MODULONORTE COMERCIO", cnpj: "90.441.460/0001-48", percentual: 15, icms: "Não", freteMinimo: 280, observacao: "NEW" },
+            { nome: "MODULARTE", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "NEW" },
+            { nome: "MADURO EPIC MOVEIS", cnpj: "29.708.319/0002-39", percentual: 17, icms: "Não", freteMinimo: 380, observacao: "SOBRE PRODUTOS" },
+            { nome: "MARKO COM. E SERV. LTDA/ LINDE COMERCIO", cnpj: "12.173.530/0002-00", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "Não cobrar frete mínimo" },
+            { 
+                nome: "METALURGICA BOEIRA", 
+                cnpj: "", 
+                percentual: 14, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL 14%, INTERIOR 16% + TAXA CT-E: R$ 10,00 + PEDÁGIO: 3,8%",
+                variacoes: { capital: 14, interior: 16 }
+            },
+            { nome: "METALURGICA CRIPPA", cnpj: "", percentual: 0.38, icms: "Não", freteMinimo: 0, observacao: "Ad Valorem 0,38% + Taxa CTe R$25,00= /0,93" },
+            { nome: "PAULO TOBA COMERCIO DE MOVEIS EIRELI", cnpj: "17.303.084/0001-35", percentual: 16, icms: "Sim", freteMinimo: 240, observacao: "" },
+            { nome: "Modulados Inteligente Comercio", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "MARELLI CIF", 
+                cnpj: "", 
+                percentual: 12, 
+                icms: "Sim", 
+                freteMinimo: 240, 
+                observacao: "CAPITAL 12% R$ 240,00, INTERIOR 14% R$ 280,00",
+                variacoes: { capital: 12, interior: 14 }
+            },
+            { nome: "MARELLI PERNAMBUCO/ SOFT MOVEIS", cnpj: "", percentual: 12, icms: "Não", freteMinimo: 180, observacao: "" },
+            { 
+                nome: "MAIA E SILVA PLANEJADOS ME- PRIME PLANEJADOS", 
+                cnpj: "18.730.464/0001-19", 
+                percentual: 14, 
+                icms: "Não", 
+                freteMinimo: 240, 
+                observacao: "HR LAMINADOS, BOA VISTA, GRUPO K1 + TAXA CT-E: R$ 15,00",
+                variacoes: { default: 14 }
+            },
+            { 
+                nome: "MARELLI TERESINA E SÃO LUIS(FOB)", 
+                cnpj: "", 
+                percentual: 12, 
+                icms: "Não", 
+                freteMinimo: 270, 
+                observacao: "Capital (São Jose do Ribamar considerar capital) 12% R$ 270,00, Interior 14.5% R$ 320,00",
+                variacoes: { capital: 12, interior: 14.5 }
+            },
+            { nome: "MARINHO COLCHÕES", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 320, observacao: "" },
+            { nome: "MEL PLANEJADOS COMERCIO", cnpj: "35454200000130", percentual: 12, icms: "Sim", freteMinimo: 150, observacao: "" },
+            { 
+                nome: "MS ALBUQUERQUE", 
+                cnpj: "", 
+                percentual: 13, 
+                icms: "Sim", 
+                freteMinimo: 70, 
+                observacao: "ARTESANO 13%, GREBEL / RGB 14%, CONFORFLEX 18%, DAF / BARTELLI 14%, REALITA / MATREZAN 16.5% + TAXA CT-E: R$ 10,00",
+                variacoes: { artesano: 13, grebel: 14, conforflex: 18, daf: 14, realita: 16.5 }
+            },
+            { nome: "MS ELETRO – ITALINEA LIMOEIRO DO NORTE", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 180, observacao: "" },
+            { 
+                nome: "MARQUES E ROCHA", 
+                cnpj: "", 
+                percentual: 13, 
+                icms: "Sim", 
+                freteMinimo: 100, 
+                observacao: "CAPITAL 13% R$ 100,00, INTERIOR 15% R$ 120,00",
+                variacoes: { capital: 13, interior: 15 }
+            },
+            { nome: "MOVERO MOVEIS R.P ROCHA", cnpj: "54.760.547/0001-14", percentual: 18, icms: "Não", freteMinimo: 360, observacao: "" },
+            { nome: "N C G de Andrade/ NA CASA BOUTIQUE", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "NORTE MOVEIS COMERCIO E SERVICOS", cnpj: "09.539.544/0001-09", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "NEW MOVEIS", 
+                cnpj: "46475800000130", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Moveis de decoração 16%, Estofados 19%",
+                variacoes: { moveis: 16, estofados: 19 }
+            },
+            { nome: "COLUMBIA COMERCIAL", cnpj: "", percentual: 16.5, icms: "Não", freteMinimo: 350, observacao: "fabricas GEBB WORK E PLAXMETAL" },
+            { nome: "NORMA L O LIMA GELOPAR - PE", cnpj: "", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "PRO SAUDE", cnpj: "", percentual: 15.4, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
+            { nome: "UTILITTA COMÉRCIO", cnpj: "19036600000130", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "" },
+            { nome: "NEW LAV", cnpj: "30534100000120", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "OMP", 
+                cnpj: "05.075.877/0001-65", 
+                percentual: 11, 
+                icms: "Não", 
+                freteMinimo: 120, 
+                observacao: "TERESINA-PI + 3% (VILAR) 11%, PE – CABOTAGEM CAP. 346 M³ R$ 120,00, PE – INT. 399 M³ R$ 150,00, AM – CABOTAGEM 399 M³ R$ 150,00, CE – CABOTAGEM CAP. 346 M³ R$ 120,00, CE – INT. 339 M³ R$ 150,00, MA – RODOVIÁRIO CAP. 325 M³ R$ 120,00, MA – INT. 399 M³ R$ 120,00, MA – INT II. 441 M³ R$ 150,00, PI – RODOVIÁRIO CAP. 325 M³ R$ 120,00, PI – INT. 399 M³ R$ 150,00, PI – INT II. 441 M³ R$ 180,00, AD VALORE 0.36% + FOB: ICMS",
+                variacoes: { teresina: 11 }
+            },
+            { nome: "OITOMOVEIS", cnpj: "", percentual: 14, icms: "Não", freteMinimo: 280, observacao: "" },
+            { nome: "ORNATTO", cnpj: "33.262.310/0001-33", percentual: 20, icms: "Sim", freteMinimo: 240, observacao: "HR LAMINADOS" },
+            { nome: "POLO DO ELETRO COMERCIAL DE MÓVEIS", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "MÓVIES E DECORAÇÕES EM GERAL" },
+            { 
+                nome: "ANTONIO MARCOS CORRE", 
+                cnpj: "", 
+                percentual: 14, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "DECORAÇÃO 14%, ESTOFADOS 16%, ESTOFADOS – SC – PR 18%, DECORAÇÃO – SC - PR 16%",
+                variacoes: { decoracao: 14, estofados: 16, scpr_estofados: 18, scpr_decoracao: 16 }
+            },
+            { nome: "PROJETARE MOVEIS E ACESS LTDA", cnpj: "119766890000100", percentual: 16, icms: "Não", freteMinimo: 350, observacao: "" },
+            { nome: "PAFAM", cnpj: "22.939.159/0001-09", percentual: 12.5, icms: "Não", freteMinimo: 240, observacao: "" },
+            { 
+                nome: "PAULO FREIRE MOVEIS AMB LTDA", 
+                cnpj: "15.399.197/0001-50", 
+                percentual: 17, 
+                icms: "Não", 
+                freteMinimo: 350, 
+                observacao: "ORIGEM: RS - DECORAÇÃO 17%, ORIGEM: RS - ESTOFADOS 21.5%, ORIGEM: SC - DECORAÇÃO 14%, ORIGEM: SC - ESTOFADOS 20%",
+                variacoes: { rs_decoracao: 17, rs_estofados: 21.5, sc_decoracao: 14, sc_estofados: 20 }
+            },
+            { 
+                nome: "P G BRANDÃO COM DE MOVEIS E DEC", 
+                cnpj: "", 
+                percentual: 15, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "RODOVIÁRIO 15%, MARÍTIMO 13.5%, FRETE FOB: ICMS, TAXA DE CT-E: R$ 10,00",
+                variacoes: { rodoviario: 15, maritimo: 13.5 }
+            },
+            { nome: "PAULO H DE L REIS", cnpj: "32.397.826/0001-22", percentual: 13, icms: "Não", freteMinimo: 180, observacao: "INOVE OFFICE" },
+            { nome: "PROJETO INTERIORES LTDA", cnpj: "13.044.265/0001-33", percentual: 14, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "PIRATINI", 
+                cnpj: "", 
+                percentual: 20, 
+                icms: "Sim", 
+                freteMinimo: 180, 
+                observacao: "Capital 20% R$ 180,00, Interior 23% R$ 220,00",
+                variacoes: { capital: 20, interior: 23 }
+            },
+            { nome: "PRISCILLA M SALIM", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 320, observacao: "Final" },
+            { nome: "ARAUJO POUCHAIN (MAREL SLZ)", cnpj: "25.535.572/0001-04", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "" },
+            { 
+                nome: "PSD LOPES ME", 
+                cnpj: "", 
+                percentual: 17, 
+                icms: "Sim", 
+                freteMinimo: 70, 
+                observacao: "MOVEIS E DECORAÇÕES 17%, ESTOFADOS 20%, ACESSÓRIOS 10% + TAXA CT-E: R$ 10,00",
+                variacoes: { moveis: 17, estofados: 20, acessorios: 10 }
+            },
+            { 
+                nome: "PERFILYNE INDUSTRIA E COM DE PERFIS PLÁSTICOS LTDA", 
+                cnpj: "02.180.351/0001-57", 
+                percentual: 19, 
+                icms: "Não", 
+                freteMinimo: 80, 
+                observacao: "CAPITAL 19%, INTERIOR 21% + PEDÁGIO: 3,8%",
+                variacoes: { capital: 19, interior: 21 }
+            },
+            { nome: "PETRUS DA SILVA CARDOSO", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 70, observacao: "" },
+            { 
+                nome: "PROVENCI DESIGN", 
+                cnpj: "", 
+                percentual: 19, 
+                icms: "Sim", 
+                freteMinimo: 70, 
+                observacao: "CAPITAL 19% + TAXA CT-E: R$ 10,00 + ICMS, INTERIOR 22% + TAXA CT-E: R$ 10,00 + ICMS",
+                variacoes: { capital: 19, interior: 22 }
+            },
+            { 
+                nome: "PERCASA", 
+                cnpj: "", 
+                percentual: 17, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL 17%, INTERIOR 18% + TAXA CT-E: R$ 10,00",
+                variacoes: { capital: 17, interior: 18 }
+            },
+            { nome: "P DA S CARDOSO", cnpj: "10.988.332/0001-62", percentual: 20, icms: "Sim", freteMinimo: 380, observacao: "" },
+            { nome: "PASSOS COZINHAS E DECORAÇões", cnpj: "12.454.450/0001-33", percentual: 9, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "PROGRAMA COMÉRCIO E SERVIÇOS LTDA", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Sim", 
+                freteMinimo: 70, 
+                observacao: "ARTESANO/ARVI/M D MOBILE/MOVEIS THONART/BEL DESINGN/MOVEIS FERRUS/MOVEIS KAPPESBERG",
+                variacoes: { default: 16 }
+            },
+            { 
+                nome: "PVX Comercio de Moveis Ltda", 
+                cnpj: "57.407.052/0001-02", 
+                percentual: 17, 
+                icms: "Não", 
+                freteMinimo: 420, 
+                observacao: "Moveis em Geral, Objetos de decoração, Estofados 17%, Logistica 3.5%",
+                variacoes: { moveis: 17, logistica: 3.5 }
+            },
+            { 
+                nome: "PROGRAMA OFFICE/ P e G comercio de moveis", 
+                cnpj: "", 
+                percentual: 14, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL - AVANTTI, ARTESANO, CAVALETTI, GEBWORK 14%, INTERIOR - AVANTTI, ARTESANO, CAVALETTI, GEBWORK 18%",
+                variacoes: { capital: 14, interior: 18 }
+            },
+            { nome: "QUALITÁ MOVEIS DECORATIVOS", cnpj: "", percentual: 60, icms: "Não", freteMinimo: 0, observacao: "V1 TOTAL DA NF / POR 60%" },
+            { nome: "ROSANE MENEZES DA FONSECA", cnpj: "70.308.358/0001-61", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "RENNA" },
+            { nome: "RAIMUNDO MILTON CAROLINO", cnpj: "06.965.560/0001-67", percentual: 15.5, icms: "Não", freteMinimo: 0, observacao: "MOVEIS CAPITAL E INTERIOR 15.5%, TELASUL 12%" },
+            { nome: "REALIZARTE COMÉRCIO DE MÓVEIS PLANEJADOS", cnpj: "", percentual: 11, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "REQUINTE MOVEIS", cnpj: "14.537.353/0002-10", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "PARNAIBA - Sem minino" },
+            { nome: "REQUINTE MOVEIS", cnpj: "14.537.353/0001-30", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "URUCUI - Sem minino" },
+            { nome: "RECICLE EXPRESS IND E COM LTDA", cnpj: "07.969.885/0001-80", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "RB IND E COM DE MOVEIS LTDA", 
+                cnpj: "11.750.243/0001-63", 
+                percentual: 17, 
+                icms: "Não", 
+                freteMinimo: 120, 
+                observacao: "MOVEIS DIVERSOS 17%, COLCHÃO 27%, ESTOFADOS 23%",
+                variacoes: { moveis: 17, colchao: 27, estofados: 23 }
+            },
+            { nome: "R. B. Teixeira Oliveira - Me", cnpj: "27.218.737/0001-31", percentual: 16.5, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "RENNA ALUMINIO E COMPONENTES/RIVATTI", cnpj: "03.961.151/0001-02", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "Área de trabalho" },
+            { 
+                nome: "REPRESENTANTE RIVATTI THULHYO SÃO LUIS – MA", 
+                cnpj: "", 
+                percentual: 15, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "CAP 15%, INT 17% + ICMS + TAXA CT-E R$ 25,00",
+                variacoes: { capital: 15, interior: 17 }
+            },
+            { 
+                nome: "REF REPRESENTAÇÕES", 
+                cnpj: "10598800000120", 
+                percentual: 11, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL - FLORENSE SÃO LUIS 11%, INTERIOR - FLORENSE SÃO LUIS 14%",
+                variacoes: { capital: 11, interior: 14 }
+            },
+            { nome: "R N MARTINS COMÉRCIO", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 280, observacao: "" },
+            { nome: "RODRIGO ELETRO - M. D. Lopes de Moura", cnpj: "20.884.084/0001-80", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "MÓVEIS RODIAL", cnpj: "91.062.497/0001-28", percentual: 26, icms: "Sim", freteMinimo: 0, observacao: "Boa Vista - Verificar cubagem" },
+            { 
+                nome: "NEPOMUCENO", 
+                cnpj: "50231100000130", 
+                percentual: 10, 
+                icms: "Não", 
+                freteMinimo: 320, 
+                observacao: "OBJETOS 10%, MOVEIS 15%",
+                variacoes: { objetos: 10, moveis: 15 }
+            },
+            { nome: "SÃO FRANCISCO COMERCIO TERESINA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "final" },
+            { nome: "S S DE CASTRO", cnpj: "", percentual: 10, icms: "Sim", freteMinimo: 180, observacao: "" },
+            { nome: "R2 SMG EMPREENDIMENTOS E EVENTOS LTDA", cnpj: "46097500000130", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "400 ao m³ + ICMS" },
+            { 
+                nome: "A.I.T Esquadrias", 
+                cnpj: "", 
+                percentual: 14.5, 
+                icms: "Não", 
+                freteMinimo: 240, 
+                observacao: "TERESINA 14.5% R$ 240,00, SÃO LUIS 14.5% R$ 240,00, IMPERATRIZ 16% R$ 280,00",
+                variacoes: { teresina: 14.5, sao_luis: 14.5, imperatriz: 16 }
+            },
+            { 
+                nome: "C P DE OLIVEIRA ESQUADRIAS", 
+                cnpj: "", 
+                percentual: 19, 
+                icms: "Não", 
+                freteMinimo: 360, 
+                observacao: "Com vidros - BALSAS E IMPERATRIZ 19%, Sem vidros - BALSAS E IMPERATRIZ 16%",
+                variacoes: { com_vidros: 19, sem_vidros: 16 }
+            },
+            { 
+                nome: "RESFRIAR CLIMATIZADORES", 
+                cnpj: "", 
+                percentual: 12, 
+                icms: "Não", 
+                freteMinimo: 100, 
+                observacao: "CAPITAL 12%, INTERIOR 14%, MANAUS 16% + TAXA CT-E: R$ 15,00 + PEDÁGIO: 3,8% + ICMS",
+                variacoes: { capital: 12, interior: 14, manaus: 16 }
+            },
+            { nome: "S.M.V. LIMA", cnpj: "92.979.459/0001-05", percentual: 20, icms: "Sim", freteMinimo: 0, observacao: "MANAUS FOB" },
+            { nome: "SGRY BELEM RESTAURANTES LDTA", cnpj: "44.254.425/0001-00", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "STAR MOBILE", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "Capital 16%, Interior I 18%, Interior II 20%, Região Manaus 18%, Região Boa Vista 20%",
+                variacoes: { capital: 16, interior_i: 18, interior_ii: 20, manaus: 18, boavista: 20 }
+            },
+            { nome: "SÃO FRANCISCO COMERCIO TERESINA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "final" },
+            { 
+                nome: "SIMONE HADDAD", 
+                cnpj: "", 
+                percentual: 9, 
+                icms: "Sim", 
+                freteMinimo: 200, 
+                observacao: "TAPETES E DECORAÇÃO 9%, MOVEIS E DECORAÇÃO 17%, ESTOFADOS E SOFAS 19.5%",
+                variacoes: { tapetes: 9, moveis: 17, estofados: 19.5 }
+            },
+            { 
+                nome: "SONHO BIANCO/ISMY", 
+                cnpj: "", 
+                percentual: 24, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "Demais fornecedores final 24%, Fornecedor PILATI 20%, camas motorizadas (FORNECEDOR PILATI) 12%, box e bicamas (FORNECEDOR PILATI) 20%",
+                variacoes: { default: 24, pilati: 20, camas_motorizadas: 12, box_bicamas: 20 }
+            },
+            { nome: "STANKI IND DE PLASTICOS", cnpj: "", percentual: 0, icms: "Não", freteMinimo: 0, observacao: "R$ 35,00 a unidade" },
+            { nome: "S e S Ananindeua- PA", cnpj: "34.970.451/0002-54", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "LACASAMUL" },
+            { nome: "SPAZIO COMERCIO DE MOVEIS LTDA", cnpj: "01.067.443/0001-62", percentual: 17, icms: "Não", freteMinimo: 240, observacao: "" },
+            { nome: "TODESCHINI RECIFE (VALINO)", cnpj: "", percentual: 13.5, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00 *BOLETO MÁXIMO DE R$ 3.00,00" },
+            { 
+                nome: "TELASUL", 
+                cnpj: "", 
+                percentual: 20, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "LINHA TELASUL 20%, LINHA THELA 15%",
+                variacoes: { telasul: 20, thela: 15 }
+            },
+            { nome: "TAP MOVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 240, observacao: "" },
+            { nome: "TAU COMERCIO DE MÓVEIS", cnpj: "", percentual: 10, icms: "Sim", freteMinimo: 180, observacao: "+TAXA CT-E: 15,00 + ICMS" },
+            { 
+                nome: "TASSEI COMÉRCIO DE MOVEIS E SERVICOS LTDA", 
+                cnpj: "", 
+                percentual: 15, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "RODOVIÁRIO 15%, MARÍTIMO 13%",
+                variacoes: { rodoviario: 15, maritimo: 13 }
+            },
+            { nome: "TRENDD COM DE MÓVEIS", cnpj: "", percentual: 15, icms: "Não", freteMinimo: 100, observacao: "" },
+            { 
+                nome: "TISSOT", 
+                cnpj: "06.954.361/0001-53", 
+                percentual: 16, 
+                icms: "Sim", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL CE 16%, INTERIOR CE 18%",
+                variacoes: { capital: 16, interior: 18 }
+            },
+            { nome: "THE COM. DE MÓVEIS LTDA", cnpj: "19.645.957/0001-13", percentual: 11.5, icms: "Não", freteMinimo: 240, observacao: "BRS/CINEX/ALUMISTAR/TODESCHINI/UNICASA - CAPITAL" },
+            { nome: "E E E DIOGO E & E DIOGO", cnpj: "54.265.299/0001-35", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
+            { 
+                nome: "TOK GLASS", 
+                cnpj: "", 
+                percentual: 18, 
+                icms: "Não", 
+                freteMinimo: 180, 
+                observacao: "CAPITAL 18%, INTERIOR 21%",
+                variacoes: { capital: 18, interior: 21 }
+            },
+            { nome: "THL COMERCIO E SERVICOS LTDA", cnpj: "10.932.737/0001-04", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "TAXA CT-E: R$ 15,00" },
+            { 
+                nome: "TOTUS DESIGN", 
+                cnpj: "", 
+                percentual: 12, 
+                icms: "Sim", 
+                freteMinimo: 350, 
+                observacao: "OBJETOS DECORAÇÃO 12%, MOVEIS DECORAÇÃO 16%, ESTOFADOS 20%",
+                variacoes: { objetos: 12, moveis: 16, estofados: 20 }
+            },
+            { nome: "GRUPO MANIX", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "R$360,00 AO M³ + ICMS" },
+            { 
+                nome: "UNIVERSUM", 
+                cnpj: "", 
+                percentual: 13, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "PI/TERESINA (FOB USAR FORMA ENGENHARIA) 13%, PI/TERESINA (CIF) 16%",
+                variacoes: { fob: 13, cif: 16 }
+            },
+            { nome: "MOBILI COMERCIO DE MOVEIS LTDA", cnpj: "36.648.572/0001-29", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "JHONY APARECIDO SOARES DE SOUZA", cnpj: "35.562.056/0001-14", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "UNITRIPAS", cnpj: "", percentual: 21, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "VENTURA REPRE. E SERVIÇOS LTDA", cnpj: "003.864.520/0001-30", percentual: 8, icms: "Não", freteMinimo: 0, observacao: "FLORENSE/ DEMAIS MARCAS - CAPITAL" },
+            { nome: "VALCAD COMÉRCIO E SERVIÇOS DE MOVEIS LTDA – EPP", cnpj: "20.504.758/0001-74", percentual: 16, icms: "Não", freteMinimo: 180, observacao: "TAXA CT-E: R$ 15,00" },
+            { 
+                nome: "VA COMERCIO VAREJISTA DE MOVEIS LTDA", 
+                cnpj: "06.922.141/0001-48", 
+                percentual: 22, 
+                icms: "Sim", 
+                freteMinimo: 150, 
+                observacao: "ESTOFADOS 22%, DECORAÇÃO/MÓVEIS 18% + TAXA CT-E: R$ 15,00",
+                variacoes: { estofados: 22, decoracao: 18 }
+            },
+            { nome: "VILAG MATERIAIS E SERVIÇOS DE CONSTRUÇÃO LTDA", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "FINAL" },
+            { 
+                nome: "VQ COM. E SER. – DALMÓBILE CE", 
+                cnpj: "", 
+                percentual: 10, 
+                icms: "Não", 
+                freteMinimo: 180, 
+                observacao: "quando não fechar 10toneladas 10%, quando fechar 10toneladas 8%",
+                variacoes: { normal: 10, fechado: 8 }
+            },
+            { nome: "W V B LEITE FORTES ALIMENTAÇÃO", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 180, observacao: "" },
+            { nome: "VINÍCOLA SÃO LUIZ", cnpj: "", percentual: 0, icms: "Sim", freteMinimo: 0, observacao: "São Luís - 1,10kg + ICMS" },
+            { nome: "Ipê Indústria de Móveis", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "GOB MOVEIS", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "M C COELHO COMÉRCIO", cnpj: "32.712.305/0001-12", percentual: 18, icms: "Não", freteMinimo: 350, observacao: "Final" },
+            { nome: "J. MARCON", cnpj: "89.686.422/0001-76", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Frete CIF – Verificar cubagem" },
+            { nome: "MAGAZINE LILIANI AS", cnpj: "11.590.296/0002-45", percentual: 17, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "MINUZIE MOVEIS PLANEJADOS LTDA", cnpj: "39.385.804/0001-91", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "M C INTERIORES LTDA", cnpj: "47.717.999/0001-58", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "NÃO POSSUI FRETE MÍNIMO" },
+            { 
+                nome: "APEN – V W V IND DE MOVEIS E ESQUADRIAS LTDA", 
+                cnpj: "02.841.350/0001-06", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "IMPERATRIZ 16%, TEREZINA 14.5%",
+                variacoes: { imperatriz: 16, terezina: 14.5 }
+            },
+            { nome: "MJG FERREIRA M J G", cnpj: "17.060.345/0001-33", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "SÃO LUIS" },
+            { nome: "N C G DE ANDRADE ME", cnpj: "41.217.017/0001-82", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "BUENO DIAS", cnpj: "", percentual: 17.2, icms: "Não", freteMinimo: 0, observacao: "Dos Fornecedores MARANELLO ou PISANI" },
+            { nome: "JUCELINO DE SOUZA BATISTa EIRELI", cnpj: "05.930.501/0001-90", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "ADAGIO HOME LTDA", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "WOOD DECOR", cnpj: "", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "CASA BONITA – FORTALEZA", cnpj: "10.387.602/0006-01", percentual: 15, icms: "Não", freteMinimo: 0, observacao: "Não cobrar frete mínimo, somente o percentual" },
+            { nome: "EROMIDIO MARTINS DE OLIVEIRA - TERESINA", cnpj: "", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "MADESERRA MOVEIS E MADEIRAS LTDA", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Não", 
+                freteMinimo: 240, 
+                observacao: "FRETE 16%, RIVATTI 15%",
+                variacoes: { default: 16, rivatti: 15 }
+            },
+            { nome: "LEAL E PARACAT LTDA", cnpj: "47.164.931/0001-99", percentual: 18, icms: "Não", freteMinimo: 380, observacao: "BOA VISTA" },
+            { nome: "FABRICA TOKGLASS / TG INDUSTRIA", cnpj: "19.551.279/0001-20", percentual: 18, icms: "Não", freteMinimo: 0, observacao: "Final" },
+            { nome: "ITALO LUA SOUZA", cnpj: "29.880.066/0001-03", percentual: 18, icms: "Não", freteMinimo: 280, observacao: "Final" },
+            { nome: "H G MOVEIS PLANEJADOS E MODULADOS – DELLANNO MANAUS", cnpj: "45.452.460/0001-99", percentual: 16.5, icms: "Não", freteMinimo: 280, observacao: "" },
+            { nome: "FORMATO ARTIGOS DE ESCRITORIO LTDA", cnpj: "11.365.507/0001-65", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "D A RODRIGUES EPP", cnpj: "30.020.425/0001-23", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "CARVALHO E PINTO", 
+                cnpj: "", 
+                percentual: 16, 
+                icms: "Sim", 
+                freteMinimo: 240, 
+                observacao: "MOVEIS EM GERAL 16%, OBJETOS DE DECORAÇÃO 10%",
+                variacoes: { moveis: 16, objetos: 10 }
+            },
+            { 
+                nome: "PILATI - CE", 
+                cnpj: "", 
+                percentual: 12, 
+                icms: "Sim", 
+                freteMinimo: 270, 
+                observacao: "Linha Motorizada + ICMS final 12%, Linha cama e colchões + ICMS final 18%",
+                variacoes: { motorizada: 12, cama_colchoes: 18 }
+            },
+            { nome: "R C F DE", cnpj: "", percentual: 16, icms: "Sim", freteMinimo: 0, observacao: "VERIFICAR CUBAGEM" },
+            { nome: "K V S", cnpj: "20.386.674/0001-83", percentual: 16, icms: "Não", freteMinimo: 240, observacao: "Final" },
+            { nome: "A RONALDO DE SOUSA & CIA LTDA", cnpj: "27.253.176/0001-01", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "WCENE", 
+                cnpj: "", 
+                percentual: 18, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "QUANDO COLETAR NA CAVALETTI SOBRE A NOTA DE FABRICA 18%, SE ENTREGAREM NA MATRIZ 16%",
+                variacoes: { cavaletti: 18, matriz: 16 }
+            },
+            { nome: "FRANGOIANO ALIMENTOS", cnpj: "00.109.066/0001-14", percentual: 20, icms: "Não", freteMinimo: 0, observacao: "" },
+            { nome: "FHIAMA FONSECA FERREIRA", cnpj: "19.835.748/0001-32", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "IDRI BOA VISTA", cnpj: "", percentual: 20, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "America Moveis e Eletro Ltda – Epp", cnpj: "10.175.675/0001-25", percentual: 25, icms: "Sim", freteMinimo: 490, observacao: "BOA VISTA" },
+            { 
+                nome: "FORMA ENGENHARIA COM E IND REPRESENTAÇÃO LTDA", 
+                cnpj: "23.518.798/0001-03", 
+                percentual: 13, 
+                icms: "Não", 
+                freteMinimo: 40, 
+                observacao: "PLANEJADOS (sca) R$ 40,00, MOVEIS R$ 270,00",
+                variacoes: { planejados: 13, moveis: 0 }
+            },
+            { nome: "Andrade Industria de Moveis", cnpj: "11.333.538/0001-34", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "" },
+            { nome: "D S Marcenaria Moderna", cnpj: "46.711.848/0001-20", percentual: 19.5, icms: "Sim", freteMinimo: 390, observacao: "" },
+            { nome: "M D VAZ COMERCIO", cnpj: "", percentual: 16, icms: "Não", freteMinimo: 0, observacao: "" },
+            { 
+                nome: "LOCALIZA RENT A CAR S/A", 
+                cnpj: "", 
+                percentual: 12, 
+                icms: "Não", 
+                freteMinimo: 0, 
+                observacao: "CAPITAL - DIVERSAS CIDADES 12%, INTERIOR - DIVERSAS CIDADES 14%",
+                variacoes: { capital: 12, interior: 14 }
+            },
+            { nome: "FRANCISCO EDUARDO VIEIRA LIMA", cnpj: "12.056.282/0001-28", percentual: 18, icms: "Sim", freteMinimo: 0, observacao: "Não cobrar frete minino" }
+        ];
+
+        // Elementos DOM
+        const clientSearch = document.getElementById('clientSearch');
+        const suggestions = document.getElementById('suggestions');
+        const clientInfo = document.getElementById('clientInfo');
+        const productType = document.getElementById('productType');
+        const valorNF = document.getElementById('valorNF');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const calculations = document.getElementById('calculations');
+
+        // Elementos para exibir informações do cliente
+        const cnpjValue = document.getElementById('cnpjValue');
+        const percentValue = document.getElementById('percentValue');
+        const icmsValue = document.getElementById('icmsValue');
+        const minFreteValue = document.getElementById('minFreteValue');
+        const obsValue = document.getElementById('obsValue');
+
+        // Elementos para exibir cálculos
+        const calcPercent = document.getElementById('calcPercent');
+        const calcFrete = document.getElementById('calcFrete');
+        const calcMinFrete = document.getElementById('calcMinFrete');
+        const calcICMS = document.getElementById('calcICMS');
+        const calcFinal = document.getElementById('calcFinal');
+
+        // Cliente atualmente selecionado
+        let selectedClient = null;
+
+        // Função para filtrar sugestões
+        function filterSuggestions(query) {
+            return clientes.filter(cliente => 
+                cliente.nome.toLowerCase().includes(query.toLowerCase())
+            );
+        }
+
+        // Função para exibir sugestões
+        function showSuggestions(suggestionsList) {
+            suggestions.innerHTML = '';
+            
+            if (suggestionsList.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            suggestionsList.forEach(cliente => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = cliente.nome;
+                div.addEventListener('click', () => {
+                    selectClient(cliente);
+                });
+                suggestions.appendChild(div);
+            });
+            
+            suggestions.style.display = 'block';
+        }
+
+        // Função para selecionar um cliente
+        function selectClient(cliente) {
+            selectedClient = cliente;
+            clientSearch.value = cliente.nome;
+            suggestions.style.display = 'none';
+            
+            // Exibir informações do cliente
+            cnpjValue.textContent = cliente.cnpj || '-';
+            percentValue.textContent = cliente.percentual ? `${cliente.percentual}%` : 'Variável';
+            icmsValue.textContent = cliente.icms;
+            minFreteValue.textContent = cliente.freteMinimo ? `R$ ${cliente.freteMinimo.toFixed(2)}` : '-';
+            obsValue.textContent = cliente.observacao || '-';
+            
+            clientInfo.style.display = 'block';
+        }
+
+        // Event listeners
+        clientSearch.addEventListener('input', () => {
+            const query = clientSearch.value;
+            if (query.length > 1) {
+                const filtered = filterSuggestions(query);
+                showSuggestions(filtered);
+            } else {
+                suggestions.style.display = 'none';
+            }
+        });
+
+        calculateBtn.addEventListener('click', () => {
+            if (!selectedClient) {
+                alert('Por favor, selecione um cliente primeiro.');
+                return;
+            }
+            
+            const valor = parseFloat(valorNF.value);
+            if (isNaN(valor) || valor <= 0) {
+                alert('Por favor, insira um valor válido para a Nota Fiscal.');
+                return;
+            }
+            
+            // Calcular percentual baseado no tipo de produto selecionado
+            let percentual = selectedClient.percentual;
+            
+            // Verificar se há variações baseadas no tipo de produto
+            if (selectedClient.variacoes) {
+                const tipo = productType.value;
+                if (tipo !== 'default' && selectedClient.variacoes[tipo] !== undefined) {
+                    percentual = selectedClient.variacoes[tipo];
+                }
+            }
+            
+            // Cálculos
+            const valorFrete = valor * (percentual / 100);
+            const freteMinimo = selectedClient.freteMinimo || 0;
+            const valorComMinimo = Math.max(valorFrete, freteMinimo);
+            const icms = selectedClient.icms === 'Sim' ? valorComMinimo * 0.07 : 0;
+            const valorFinal = valorComMinimo + icms;
+            
+            // Exibir cálculos
+            calcPercent.textContent = `${percentual}%`;
+            calcFrete.textContent = `R$ ${valorFrete.toFixed(2)}`;
+            calcMinFrete.textContent = `R$ ${freteMinimo.toFixed(2)}`;
+            calcICMS.textContent = `R$ ${icms.toFixed(2)}`;
+            calcFinal.textContent = `R$ ${valorFinal.toFixed(2)}`;
+            
+            calculations.style.display = 'block';
+        });
+
+        // Fechar sugestões ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!clientSearch.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
